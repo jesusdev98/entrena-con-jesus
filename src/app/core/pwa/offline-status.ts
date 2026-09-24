@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, inject, isDevMode, signal } from '@angular/core';
-import { abortable, waitForOfflineCache } from './cache-readiness';
+import { abortable, preparationDeadline, waitForOfflineCache } from './cache-readiness';
 
 export type OfflineState = 'development' | 'unsupported' | 'preparing' | 'ready' | 'incomplete';
 @Injectable({ providedIn: 'root' })
@@ -8,13 +8,26 @@ export class OfflineStatus {
   readonly state = signal<OfflineState>(isDevMode() ? 'development' : 'preparing');
   readonly persistent = signal<boolean | null>(null);
   readonly persistenceMessage = signal('');
+  readonly progress = signal<{ cached: number; total: number } | null>(null);
   private verification?: Promise<void>;
   private verificationController?: AbortController;
+  private destroyed = false;
   constructor() {
     const online = () => this.online.set(navigator.onLine);
     window.addEventListener('online', online);
     window.addEventListener('offline', online);
+    if ('serviceWorker' in navigator) {
+      let previousController = navigator.serviceWorker.controller;
+      const controllerChanged = () => {
+        const current = navigator.serviceWorker.controller;
+        if (previousController && current !== previousController) this.verificationController?.abort(new Error('Worker changed'));
+        previousController = current;
+      };
+      navigator.serviceWorker.addEventListener('controllerchange', controllerChanged);
+      inject(DestroyRef).onDestroy(() => navigator.serviceWorker.removeEventListener('controllerchange', controllerChanged));
+    }
     inject(DestroyRef).onDestroy(() => {
+      this.destroyed = true;
       window.removeEventListener('online', online);
       window.removeEventListener('offline', online);
       this.verificationController?.abort();
@@ -22,6 +35,7 @@ export class OfflineStatus {
     if (!isDevMode()) void this.verify();
   }
   verify(): Promise<void> {
+    if (this.destroyed) return Promise.resolve();
     this.verification ??= this.prepare().finally(() => { this.verification = undefined; });
     return this.verification;
   }
@@ -29,25 +43,33 @@ export class OfflineStatus {
     if (isDevMode()) return;
     if (!('serviceWorker' in navigator) || !('caches' in window)) { this.state.set('unsupported'); return; }
     this.state.set('preparing');
+    this.progress.set(null);
     const controller = new AbortController();
     this.verificationController = controller;
-    const timeout = setTimeout(() => controller.abort(new Error('Offline preparation incomplete')), 15000);
+    const deadline = preparationDeadline(controller);
     try {
       const registration = await abortable(navigator.serviceWorker.ready, controller.signal);
       if (!registration.active) throw new Error('Worker not active');
       const response = await fetch(new URL('resource-manifest.json', document.baseURI), { signal: controller.signal });
       if (!response.ok) throw new Error('Resource manifest unavailable');
-      const manifest: { resources: string[] } = await response.json();
+      const manifest: { resources: string[] } = await abortable(response.json(), controller.signal);
       if (!Array.isArray(manifest.resources) || manifest.resources.length === 0 || manifest.resources.some(path => typeof path !== 'string')) {
         throw new Error('Invalid resource manifest');
       }
       const resources = [...manifest.resources, 'resource-manifest.json'].map(path => new URL(path, document.baseURI));
+      this.progress.set({ cached: 0, total: resources.length });
       await waitForOfflineCache(resources, caches,
         () => registration.active?.state === 'activated' && navigator.serviceWorker.controller !== null,
-        controller.signal);
-      this.state.set('ready');
-    } catch { this.state.set('incomplete'); }
-    finally { clearTimeout(timeout); this.verificationController = undefined; }
+        controller.signal, (cached, total) => {
+          this.progress.set({ cached, total });
+          deadline.progress(cached);
+        });
+      if (!controller.signal.aborted) this.state.set('ready');
+    } catch { if (!this.destroyed) this.state.set('incomplete'); }
+    finally {
+      deadline.clear();
+      this.verificationController = undefined;
+    }
   }
   async requestPersistence(): Promise<void> {
     try {

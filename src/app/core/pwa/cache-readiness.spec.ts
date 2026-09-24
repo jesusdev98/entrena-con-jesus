@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { abortable, waitForOfflineCache } from './cache-readiness';
+import { abortable, preparationDeadline, waitForOfflineCache } from './cache-readiness';
 
 describe('offline cache installation lifecycle', () => {
   beforeEach(() => vi.useFakeTimers());
@@ -69,6 +69,91 @@ describe('offline cache installation lifecycle', () => {
     await vi.advanceTimersByTimeAsync(500);
     controller.abort(new Error('deadline'));
     await rejected;
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('keeps preparing beyond the stall window while new resources arrive and reports actual progress', async () => {
+    const controller = new AbortController();
+    const deadline = preparationDeadline(controller);
+    const progress: number[] = [];
+    let cached = 0;
+    const waiting = waitForOfflineCache(resources, { match: async (url: RequestInfo | URL) =>
+      resources.findIndex(item => item.href === String(url)) < cached ? new Response('cached') : undefined },
+    () => true, controller.signal, (count, total) => { expect(total).toBe(2); progress.push(count); deadline.progress(count); });
+    try {
+      await vi.advanceTimersByTimeAsync(10_000);
+      cached = 1;
+      await vi.advanceTimersByTimeAsync(250);
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(controller.signal.aborted).toBe(false);
+      cached = 2;
+      await vi.advanceTimersByTimeAsync(250);
+      await waiting;
+      expect(progress).toEqual([1, 2]);
+    } finally { deadline.clear(); }
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('times out zero and failed cache hits at the stall deadline without claiming readiness', async () => {
+    for (const response of [undefined, new Response('failed', { status: 503 })]) {
+      const controller = new AbortController();
+      const deadline = preparationDeadline(controller);
+      const progress = vi.fn();
+      const waiting = waitForOfflineCache(resources, { match: async () => response }, () => true, controller.signal, progress);
+      const rejected = expect(waiting).rejects.toThrow('stalled');
+      await vi.advanceTimersByTimeAsync(15_000);
+      await rejected;
+      expect(progress).not.toHaveBeenCalled();
+      deadline.clear();
+      expect(vi.getTimerCount()).toBe(0);
+    }
+  });
+
+  it('stops at the absolute limit even when the cache continues to progress', async () => {
+    const controller = new AbortController();
+    const deadline = preparationDeadline(controller, 15_000, 30_000);
+    const progress = vi.fn();
+    let cached = 0;
+    const three = [...resources, new URL('https://example.test/entrena/third.js')];
+    const waiting = waitForOfflineCache(three, { match: async (url: RequestInfo | URL) =>
+      three.findIndex(item => item.href === String(url)) < cached ? new Response('cached') : undefined },
+    () => true, controller.signal, (count, total) => { progress(count, total); deadline.progress(count); });
+    const rejected = expect(waiting).rejects.toThrow('limit reached');
+    await vi.advanceTimersByTimeAsync(10_000);
+    cached = 1;
+    await vi.advanceTimersByTimeAsync(250);
+    await vi.advanceTimersByTimeAsync(10_000);
+    cached = 2;
+    await vi.advanceTimersByTimeAsync(250);
+    await vi.advanceTimersByTimeAsync(9_500);
+    await rejected;
+    expect(progress.mock.calls).toEqual([[1, 3], [2, 3]]);
+    deadline.clear();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('allows a recovered cache hit to extend the stall window after a final recheck loses it', async () => {
+    const controller = new AbortController();
+    const deadline = preparationDeadline(controller);
+    deadline.progress(2);
+    await vi.advanceTimersByTimeAsync(10_000);
+    deadline.progress(1);
+    deadline.progress(2);
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(controller.signal.aborted).toBe(false);
+    deadline.clear();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('cancels in-flight cache checks and clears deadline timers on destroy or update', async () => {
+    const controller = new AbortController();
+    const deadline = preparationDeadline(controller);
+    const waiting = waitForOfflineCache(resources, { match: () => new Promise<Response>(() => undefined) },
+      () => true, controller.signal);
+    const rejected = expect(waiting).rejects.toThrow('cancelled');
+    controller.abort(new Error('cancelled'));
+    await rejected;
+    deadline.clear();
     expect(vi.getTimerCount()).toBe(0);
   });
 

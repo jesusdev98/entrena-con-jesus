@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
       <p>Modo actual: <strong>{{ workspace.isTrainer() ? 'Entrenador' : 'Cliente' }}</strong></p>
       <div class="actions"><button appButton [variant]="workspace.isTrainer() ? 'primary' : 'secondary'" [attr.aria-pressed]="workspace.isTrainer()" [disabled]="workspace.busy()" (click)="workspace.changeMode('trainer')">Entrenador</button>
       <button appButton [variant]="!workspace.isTrainer() ? 'primary' : 'secondary'" [attr.aria-pressed]="!workspace.isTrainer()" [disabled]="workspace.busy()" (click)="workspace.changeMode('client')">Cliente</button></div></app-card>
-    <app-card><h2>Disponibilidad sin conexión</h2><p role="status">{{ offlineLabels[offline.state()] }}</p>
+    <app-card><h2>Disponibilidad sin conexión</h2><p role="status">{{ offlineLabels[offline.state()] }} @if (offline.state() === 'preparing' && offline.progress(); as progress) { {{ progress.cached }} de {{ progress.total }} recursos comprobados. }</p>
        <p class="muted">Esta comprobación incluye catálogos, fuentes locales y recursos para generar PDF sin conexión. El primer acceso requiere conexión.</p>
       <div class="actions"><button appButton variant="secondary" (click)="offline.verify()">Comprobar recursos</button><button appButton variant="secondary" (click)="updates.check()">Buscar actualización</button></div>
       <p class="muted">Para instalar, utiliza la opción de instalar o añadir a inicio de tu navegador cuando esté disponible.</p></app-card>
