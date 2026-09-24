@@ -1,0 +1,25 @@
+<div class="stack">
+  <section class="notice"><h2>Entrenamiento de {{ person().displayName }}</h2><p>{{ person().reference }}</p><p class="identity">ID de la persona: {{ person().id }}</p></section>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (message()) { <p role="status">{{ message() }}</p> }
+  @for (id of editor() ? [editor()!] : []; track id) { <app-training-editor [personId]="person().id" [sessionId]="id" (saved)="close(true)" (closed)="close()" /> }
+  @if (!editor()) {
+    <a routerLink="/progress">Ver historial semanal</a>
+    <section class="stack" aria-label="Sesiones en borrador"><h2>Continuar sesiones</h2>
+      @for (draft of drafts(); track draft.id) { <button appButton variant="secondary" (click)="editor.set(draft.payload.session.id)">Continuar {{ draft.payload.session.date }} · {{ draft.payload.session.labels.routine }} · {{ draft.payload.session.labels.day }}</button> }
+      @if (!drafts().length) { <p>No hay sesiones en borrador para esta persona.</p> }
+    </section>
+    <h2>Iniciar desde una rutina guardada</h2>
+    @if (plans().length) {
+      <form class="stack" [formGroup]="form" (ngSubmit)="start()">
+        <div class="field"><label for="training-revision">Rutina y revisión guardada</label><select id="training-revision" formControlName="revision" (change)="selectPlan()">
+          @for (plan of plans(); track plan.id) { <option [value]="plan.id">{{ plan.name }} · {{ plan.id }}</option> }
+        </select></div>
+        <div class="field"><label for="training-week">Semana del plan</label><select id="training-week" formControlName="week" (change)="selectWeek()">@for (week of plan()?.content?.weeks ?? []; track week.id) { <option [value]="week.id">{{ $index + 1 }}. {{ week.name }}</option> }</select></div>
+        <div class="field"><label for="training-day">Día del plan</label><select id="training-day" formControlName="day">@for (day of week()?.days ?? []; track day.id) { <option [value]="day.id">{{ $index + 1 }}. {{ day.name }}</option> }</select></div>
+        <div class="field"><label for="training-date">Fecha de entrenamiento</label><input id="training-date" type="date" formControlName="date" /></div>
+        <button appButton type="submit" [disabled]="busy()">Iniciar sesión</button>
+      </form>
+    } @else { <p>Crea una rutina válida para iniciar una sesión.</p><a routerLink="/routines">Ir a rutinas</a> }
+  }
+</div>

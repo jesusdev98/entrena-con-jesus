@@ -1,0 +1,302 @@
+bench-press|Press de banca con barra|Apoya pies y espalda en el banco; baja la barra al pecho y empuja sin despegar los glúteos.|3,1|movement
+incline-bench-press|Press inclinado con barra|En un banco inclinado, acerca la barra a la parte alta del pecho y extiende los brazos.|3,1|movement
+incline-dumbbell-press|Press inclinado con mancuernas|Apoya la espalda en el banco inclinado y empuja las mancuernas desde los hombros hacia arriba.|3,1|movement
+dumbbell-bench-press|Press de banca con mancuernas|Con los pies firmes, baja las mancuernas a los lados del pecho y vuelve a extender los brazos.|3,1|movement
+decline-bench-press|Press declinado con barra|Asegura las piernas en el banco declinado; baja la barra al pecho y empuja de forma controlada.|3,1|movement
+machine-chest-press|Press de pecho en máquina|Ajusta el asiento para que las empuñaduras queden a la altura del pecho y empuja sin adelantar los hombros.|3,1|movement
+pec-deck|Aperturas en máquina|Apoya la espalda y acerca los brazos delante del pecho sin perder el contacto con los apoyos.|0|blocked
+cable-fly|Aperturas en poleas|Adelanta un pie y junta las manos frente al pecho con los codos ligeramente flexionados.|3,1|movement
+push-up|Flexiones de brazos|Desde una plancha con manos bajo los hombros, acerca el pecho al suelo y empuja manteniendo el cuerpo alineado.|1,3|movement
+weighted-push-up|Flexiones con lastre|Asegura el lastre sobre la espalda alta; flexiona y extiende los brazos sin hundir la cintura.|3,1|movement
+overhead-press|Press militar con barra|Desde la parte alta del pecho, empuja la barra sobre la cabeza manteniendo abdomen y glúteos activos.|3,1|movement
+seated-dumbbell-press|Press de hombros sentado|Apoya la espalda en el respaldo y eleva las mancuernas desde los hombros sin arquear la zona lumbar.|3,1|movement
+arnold-press|Press Arnold|Empieza con las palmas hacia ti; gira los antebrazos mientras elevas las mancuernas y revierte el giro al bajar.|0|blocked
+lateral-raise|Elevaciones laterales|Eleva las mancuernas hacia los lados hasta la altura de los hombros, con codos suaves y sin balancear el tronco.|3,1|movement
+cable-lateral-raise|Elevaciones laterales en polea|Desde la polea baja, separa los brazos hacia los lados conservando una ligera flexión de codos.|3,1|movement
+front-raise|Elevaciones frontales|Levanta las mancuernas por delante hasta la altura de los hombros y baja sin impulsar el cuerpo.|3,1|movement
+rear-delt-fly|Aperturas posteriores con mancuernas|Inclina el tronco desde la cadera y abre los brazos hacia los lados sin elevar los hombros hacia las orejas.|3,1|movement
+reverse-pec-deck|Aperturas inversas en máquina|Mira hacia el respaldo, apoya el pecho y abre los brazos llevando las manos hacia atrás.|3,1|movement
+face-pull|Tirón a la cara en polea|Tira de la cuerda hacia la cara separando sus extremos y llevando los codos hacia los lados.|3,1|movement
+upright-row|Remo al mentón con barra|Eleva la barra cerca del cuerpo guiando con los codos; limita la altura a un recorrido cómodo para los hombros.|3,1|movement
+deadlift|Peso muerto con barra|Acerca la barra a las piernas y extiende caderas y rodillas manteniendo la espalda estable y la carga próxima.|3,1|movement
+romanian-deadlift|Peso muerto rumano con barra|Desde de pie, lleva la cadera atrás con rodillas suaves y desliza la barra junto a las piernas antes de regresar.|1,3|movement
+barbell-row|Remo con barra|Inclina el tronco, deja colgar la barra y llévala hacia el abdomen sin enderezarte en cada repetición.|3,1|movement
+t-bar-row|Remo en barra T|Mantén el torso inclinado y tira del agarre hacia el abdomen acercando los codos al cuerpo.|3,1|movement
+dumbbell-bent-over-row|Remo inclinado con mancuernas|Con ambas mancuernas colgando bajo el pecho, lleva los codos hacia atrás conservando la inclinación del tronco.|3,1|movement
+one-arm-dumbbell-row|Remo con mancuerna a una mano|Apoya una mano y una rodilla en el banco; lleva la mancuerna hacia la cadera sin girar el tronco.|3,1|movement
+chest-supported-row|Remo con pecho apoyado|Apoya el pecho en el soporte y tira de las empuñaduras hacia el cuerpo sin despegarte del respaldo.|3,1|movement
+seated-row|Remo sentado en polea|Siéntate con el tronco estable y acerca el agarre al abdomen llevando los codos hacia atrás.|3,1|movement
+machine-row|Remo en máquina|Ajusta asiento y apoyo; tira de las empuñaduras hacia las costillas sin elevar los hombros.|3,1|movement
+lat-pulldown|Jalón al pecho|Sujeta la barra por encima de la cabeza y llévala hacia la parte alta del pecho, sin tirar detrás del cuello.|0|blocked
+close-grip-lat-pulldown|Jalón con agarre cerrado|Desde brazos elevados, lleva el agarre cerrado al pecho guiando los codos hacia abajo.|3,1|movement
+straight-arm-pulldown|Jalón con brazos rectos|Mantén los codos ligeramente flexionados y lleva la barra desde delante de los hombros hasta los muslos.|3,1|movement
+pull-up|Dominadas pronas|Cuelga con las palmas al frente, acerca el pecho a la barra y desciende sin balancearte.|3,1|movement
+assisted-pull-up|Dominadas asistidas|Ajusta la ayuda y apoya las rodillas en la plataforma; tira hacia la barra y baja de manera controlada.|3,1|movement
+weighted-pull-up|Dominadas con lastre|Fija el lastre al cinturón y eleva el cuerpo hacia la barra evitando que la carga oscile.|3,1|movement
+chin-up|Dominadas supinas|Con las palmas hacia ti, flexiona los codos para acercarte a la barra y baja lentamente.|3,1|movement
+shrug|Encogimientos de hombros con barra|Sostén la barra con brazos extendidos y eleva los hombros verticalmente, sin hacer círculos.|1,3|movement
+squat|Sentadilla con barra|Con la barra apoyada sobre la espalda alta, flexiona caderas y rodillas y vuelve a subir con los pies firmes.|1,3|movement
+front-squat|Sentadilla frontal|Apoya la barra delante de los hombros; mantén los codos elevados mientras bajas y subes entre los pies.|1,3|movement
+hack-squat|Sentadilla hack en máquina|Apoya espalda y hombros en la máquina y flexiona las rodillas conservando los talones sobre la plataforma.|0|blocked
+leg-press|Prensa de piernas|Con la pelvis apoyada, flexiona las rodillas sin redondear la espalda y empuja la plataforma sin bloquearlas bruscamente.|1,3|movement
+bulgarian-split-squat|Sentadilla búlgara con mancuernas|Apoya el empeine trasero en el banco y baja verticalmente, cargando principalmente la pierna delantera.|3,1|movement
+walking-lunge|Zancadas caminando con mancuernas|Da un paso amplio, baja la rodilla trasera y avanza alternando las piernas sin perder el equilibrio.|1,3|cycle
+step-up|Subida al banco con mancuernas|Apoya todo el pie sobre un banco estable y sube extendiendo la pierna de apoyo, sin saltar con la otra.|0|blocked
+leg-extension|Extensiones de rodilla en máquina|Alinea la rodilla con el eje de la máquina y extiende las piernas elevando el rodillo de los tobillos.|3,1|movement
+leg-curl|Curl femoral tumbado|Túmbate boca abajo, fija la pelvis al banco y flexiona las rodillas acercando los talones a los glúteos.|3,1|movement
+seated-leg-curl|Curl femoral sentado|Ajusta los apoyos del muslo y tobillo; lleva los talones debajo del asiento sin levantar la pelvis.|3,1|movement
+hip-thrust|Empuje de cadera con barra|Apoya la espalda alta en el banco y eleva la pelvis con la barra sobre la cadera hasta alinear tronco y muslos.|3,1|movement
+glute-bridge|Puente de glúteos|Túmbate con rodillas flexionadas y pies apoyados; eleva la pelvis sin arquear la espalda y vuelve al suelo.|3,1|movement
+good-morning|Buenos días con barra|Con la barra en la espalda alta, lleva la cadera atrás y baja el tronco manteniendo las rodillas ligeramente flexionadas.|3,1|movement
+standing-calf-raise|Elevación de talones en máquina|Apoya el antepié en la plataforma y eleva los talones, manteniendo las rodillas estables.|3,1|movement
+seated-calf-raise|Elevación de talones sentado|Con el apoyo sobre los muslos, eleva los talones presionando el antepié contra la plataforma.|3,1|movement
+bicep-curl|Curl de bíceps con mancuernas|Con las palmas hacia delante, flexiona los codos sin adelantar los hombros y baja lentamente.|3,1|movement
+hammer-curl|Curl martillo|Mantén las palmas enfrentadas y acerca las mancuernas a los hombros sin balancear el tronco.|3,1|movement
+preacher-curl|Curl de bíceps en banco predicador|Apoya los brazos en el soporte y flexiona los codos manteniendo los hombros quietos.|3,1|movement
+cable-curl|Curl de bíceps en polea|Desde la polea baja, flexiona los codos acercando el agarre a los hombros y conserva tensión al bajar.|3,1|movement
+reverse-curl|Curl inverso con barra|Sujeta la barra con palmas hacia abajo y flexiona los codos manteniendo las muñecas alineadas.|1,3|movement
+wrist-curl|Flexión de muñecas con barra|Apoya los antebrazos con palmas hacia arriba y mueve la barra flexionando solo las muñecas.|0|blocked
+tricep-pushdown|Extensión de tríceps en polea|Fija los codos junto al tronco y empuja el agarre hacia los muslos extendiendo los brazos.|3,1|movement
+overhead-tricep-extension|Extensión de tríceps sobre la cabeza en polea|Con los codos orientados arriba, extiende los brazos desde detrás de la cabeza sin mover el tronco.|1,3|movement
+skull-crusher|Extensión de tríceps tumbado con barra|En el banco, flexiona los codos llevando la barra hacia la frente y vuelve a extender sin abrirlos.|1,3|movement
+close-grip-bench-press|Press de banca con agarre cerrado|Sujeta la barra aproximadamente al ancho de hombros; bájala al pecho con codos próximos al cuerpo y empuja.|3,1|movement
+dip|Fondos en paralelas|Sostente sobre las barras, flexiona los codos hasta un recorrido cómodo y empuja para elevar el cuerpo.|1,3|movement
+assisted-dip|Fondos asistidos|Apoya las rodillas en la plataforma de asistencia y realiza los fondos manteniendo el apoyo de las manos en las paralelas.|0|blocked
+plank|Plancha de antebrazos|Apoya antebrazos y puntas de los pies; mantén cabeza, pelvis y talones alineados mientras respiras con normalidad.|3,1|hold
+side-plank|Plancha lateral|Apoya un antebrazo bajo el hombro y eleva la pelvis, manteniendo el cuerpo alineado de lado.|3,1|hold
+hanging-leg-raise|Elevación de piernas colgado|Desde una suspensión estable, eleva las piernas por delante sin balancearte y baja controlando la pelvis.|3,1|movement
+cable-crunch|Encogimiento abdominal en polea|Sujeta la cuerda junto a la cabeza y acerca las costillas a la pelvis flexionando el tronco, sin tirar solo con los brazos.|0|blocked
+ab-wheel|Rueda abdominal|Desde las rodillas, aleja la rueda manteniendo la pelvis estable y vuelve sin hundir la zona lumbar.|0|blocked
+running|Carrera en cinta|Ajusta la velocidad de la cinta y alterna apoyos bajo el cuerpo, balanceando los brazos sin sujetarte a las barandillas.|1,2|cycle
+walking|Caminata en cinta|Ajusta la velocidad de la cinta y camina erguido, alternando el apoyo del talón al antepié y el balanceo de los brazos.|1,2|cycle
+cycling|Ciclismo en bicicleta estática|Ajusta el sillín para mantener una ligera flexión de rodilla al extender la pierna y pedalea de forma continua.|1,3|cycle
+rowing|Remo en ergómetro|Empuja primero con las piernas, abre la cadera y termina tirando del agarre; vuelve en orden inverso.|3,1|cycle
+stair-climber|Escaladora|Sube alternando los pies sobre los peldaños, con el tronco erguido y sin descargar tu peso en las barandillas.|1,3|cycle
+dumbbell-fly|Aperturas con mancuernas|En un banco, abre los brazos con codos ligeramente flexionados y vuelve a juntar las mancuernas sobre el pecho.|1,2|movement
+incline-cable-fly|Aperturas inclinadas en polea|Apoya la espalda en un banco inclinado y junta las manos sobre el pecho describiendo un arco con los brazos.|2,1|movement
+decline-dumbbell-press|Press declinado con mancuernas|Asegura las piernas en el banco declinado y empuja las mancuernas desde los lados del pecho hacia arriba.|3,1|movement
+smith-machine-bench-press|Press de banca en máquina Smith|Coloca el banco bajo la barra guiada y empuja desde el pecho manteniendo los pies apoyados.|3,1|movement
+landmine-press|Press con barra anclada|Sostén el extremo de la barra frente al hombro y empújalo hacia delante y arriba sin girar el tronco.|3,1|movement
+chest-dip|Fondos con énfasis en pecho|Inclina ligeramente el tronco hacia delante al flexionar los codos en las paralelas y vuelve a elevarte.|1,3|movement
+weighted-dip|Fondos con lastre|Asegura el lastre al cinturón, baja entre las paralelas de forma controlada y empuja sin balancear la carga.|1,3|movement
+machine-shoulder-press|Press de hombros en máquina|Regula el asiento y empuja las empuñaduras sobre la cabeza sin despegar la espalda del apoyo.|3,1|movement
+standing-dumbbell-press|Press de hombros de pie|Desde los hombros, eleva las mancuernas manteniendo las costillas sobre la pelvis y sin impulso de piernas.|3,1|movement
+push-press|Press con impulso de piernas|Flexiona ligeramente las rodillas y extiéndelas para impulsar la barra desde los hombros hasta encima de la cabeza.|3,1|movement
+machine-lateral-raise|Elevaciones laterales en máquina|Apoya los brazos bajo las almohadillas y elévalos hacia los lados sin encoger los hombros.|3,1|movement
+cable-front-raise|Elevación frontal en polea|Desde la polea baja, eleva el brazo por delante hasta la altura del hombro manteniendo el codo suave.|3,1|movement
+plate-front-raise|Elevación frontal con disco|Sujeta el disco con ambas manos y elévalo por delante hasta la altura del pecho sin balancearte.|3,1|movement
+bent-over-rear-delt-raise|Elevación posterior con tronco inclinado|Inclina el torso, deja las mancuernas bajo el pecho y abre los brazos lateralmente sin extender la espalda.|3,1|movement
+cable-rear-delt-fly|Aperturas posteriores en poleas|Cruza los agarres delante del pecho y abre los brazos hacia los lados manteniendo los codos ligeramente flexionados.|3,1|movement
+pendlay-row|Remo Pendlay|Desde la barra apoyada en el suelo, tira hacia el abdomen con el tronco casi horizontal y vuelve a apoyarla.|0|blocked
+inverted-row|Remo invertido|Bajo una barra fija, mantén el cuerpo alineado y acerca el pecho a la barra flexionando los codos.|3,1|movement
+meadows-row|Remo Meadows|Con el tronco inclinado junto al extremo de una barra anclada, tira del extremo hacia la cadera.|3,1|movement
+single-arm-cable-row|Remo en polea a una mano|Sujeta la empuñadura con un brazo y lleva el codo atrás sin rotar el tronco.|0|blocked
+wide-grip-lat-pulldown|Jalón con agarre ancho|Sujeta la barra con manos separadas y llévala delante de la cara hacia el pecho, sin inclinarte en exceso.|0|blocked
+neutral-grip-pull-up|Dominadas con agarre neutro|Con las palmas enfrentadas, tira del cuerpo hacia los agarres y desciende sin balanceos.|0|blocked
+assisted-chin-up|Dominadas supinas asistidas|Con las palmas hacia ti y las rodillas apoyadas en la asistencia, eleva el pecho hacia los agarres.|3,1|movement
+weighted-chin-up|Dominadas supinas con lastre|Asegura el lastre y sube con las palmas hacia ti manteniendo la carga estable debajo del cuerpo.|3,1|movement
+rack-pull|Peso muerto desde soportes|Coloca la barra sobre soportes, acerca las caderas y extiéndelas manteniendo la carga junto al cuerpo.|0|blocked
+back-extension|Extensión de espalda en banco|Fija las piernas en el banco, baja el tronco desde la cadera y vuelve hasta alinearlo sin hiperextender.|3,1|movement
+dumbbell-shrug|Encogimientos con mancuernas|Sostén las mancuernas a los lados y eleva los hombros hacia arriba sin flexionar los codos.|1,3|movement
+goblet-squat|Sentadilla con mancuerna al pecho|Sujeta una mancuerna junto al pecho y baja entre las piernas conservando los talones apoyados.|3,1|movement
+smith-machine-squat|Sentadilla en máquina Smith|Sitúa la barra guiada sobre la espalda alta; flexiona rodillas y caderas manteniendo los pies firmes.|1,3|movement
+belt-squat|Sentadilla con cinturón de carga|Fija la carga al cinturón de cadera y realiza la sentadilla manteniendo el torso estable.|0|blocked
+sumo-deadlift|Peso muerto sumo|Separa los pies y sujeta la barra entre las piernas; extiende caderas y rodillas manteniendo las manos cerca del cuerpo.|1,3|movement
+trap-bar-deadlift|Peso muerto con barra hexagonal|Colócate dentro de la barra, sujeta los agarres laterales y eleva la carga extendiendo piernas y caderas.|1,3|movement
+lying-leg-curl|Curl femoral prono|Tumbado boca abajo, acerca los talones a los glúteos contra el rodillo sin despegar la pelvis.|3,1|movement
+nordic-hamstring-curl|Curl nórdico|Con tobillos fijados y cuerpo alineado desde las rodillas, inclínate hacia delante frenando la caída con los isquiotibiales.|3,1|movement
+single-leg-romanian-deadlift|Peso muerto rumano a una pierna|Lleva una pierna atrás mientras inclinas el tronco y desciendes las mancuernas, manteniendo la pelvis orientada al suelo.|3,1|movement
+reverse-lunge|Zancada atrás con mancuernas|Desde de pie, da un paso atrás y baja la rodilla trasera; regresa impulsándote con la pierna delantera.|3,1|movement
+split-squat|Sentadilla dividida con mancuernas|Separa los pies adelante y atrás; baja verticalmente flexionando ambas rodillas sin cambiar la posición de apoyo.|3,1|movement
+cable-kickback|Patada de glúteo en polea|Coloca la tobillera y lleva la pierna hacia atrás sin arquear la espalda ni girar la pelvis.|3,1|movement
+hip-abduction-machine|Abducción de cadera en máquina|Sentado con los apoyos por fuera de las rodillas, separa los muslos y vuelve de forma controlada.|3,1|movement
+single-leg-glute-bridge|Puente de glúteos a una pierna|Apoya un pie, eleva la otra pierna y levanta la pelvis manteniéndola nivelada.|3,1|movement
+barbell-glute-bridge|Puente de glúteos con barra|Desde el suelo y con la barra acolchada sobre la cadera, eleva la pelvis sin arquear la espalda.|0|blocked
+dumbbell-glute-bridge|Puente de glúteos con mancuerna|Apoya la espalda en el suelo y sujeta la mancuerna sobre la pelvis mientras elevas la cadera.|3,1|movement
+dumbbell-hip-thrust|Empuje de cadera con mancuerna|Apoya la espalda alta en un banco y eleva la pelvis sosteniendo la mancuerna sobre la cadera.|3,1|movement
+smith-machine-hip-thrust|Empuje de cadera en máquina Smith|Con la espalda alta en el banco, eleva la barra guiada desde la pelvis hasta alinear tronco y muslos.|3,1|movement
+smith-machine-romanian-deadlift|Peso muerto rumano en máquina Smith|Desliza la barra guiada junto a los muslos al llevar la cadera atrás y vuelve extendiéndola.|3,1|movement
+dumbbell-romanian-deadlift|Peso muerto rumano con mancuernas|Con rodillas suaves, lleva la cadera atrás y baja las mancuernas junto a las piernas sin redondear la espalda.|3,1|movement
+kettlebell-romanian-deadlift|Peso muerto rumano con pesa rusa|Sostén la pesa rusa delante del cuerpo y baja desde la cadera conservando la espalda estable.|3,1|movement
+cable-pull-through|Extensión de cadera con polea entre piernas|De espaldas a la polea baja, pasa la cuerda entre las piernas y extiende la cadera sin tirar con los brazos.|1,3|movement
+machine-glute-kickback|Patada de glúteo en máquina|Ajusta el apoyo y empuja la plataforma hacia atrás con una pierna, manteniendo la pelvis fija.|0|blocked
+cable-standing-hip-abduction|Abducción de cadera de pie en polea|Con una tobillera y un apoyo estable, separa la pierna hacia el lado sin inclinar el tronco.|3,1|movement
+cable-standing-hip-adduction|Aducción de cadera de pie en polea|Coloca la tobillera en la pierna cercana a la polea y crúzala por delante de la pierna de apoyo.|0|blocked
+hip-adduction-machine|Aducción de cadera en máquina|Con los apoyos en la cara interna de los muslos, acerca las piernas lentamente sin despegar la espalda.|3,1|movement
+smith-machine-bulgarian-split-squat|Sentadilla búlgara en máquina Smith|Apoya el pie trasero en un banco y baja con la barra guiada, cargando la pierna delantera.|3,1|movement
+smith-machine-reverse-lunge|Zancada atrás en máquina Smith|Sostén la barra guiada sobre la espalda alta y da un paso atrás para descender con control.|3,1|movement
+smith-machine-split-squat|Sentadilla dividida en máquina Smith|Con pies separados adelante y atrás, flexiona ambas rodillas bajo la barra guiada sin desplazar los apoyos.|3,1|movement
+heel-elevated-goblet-squat|Sentadilla al pecho con talones elevados|Apoya los talones sobre una cuña estable y baja sosteniendo la mancuerna frente al pecho.|3,1|movement
+dumbbell-sumo-squat|Sentadilla sumo con mancuerna|Con los pies separados, sostén la mancuerna entre las piernas y baja las caderas siguiendo la dirección de las rodillas.|3,1|movement
+dumbbell-sumo-deadlift|Peso muerto sumo con mancuernas|Con postura amplia, eleva las mancuernas desde entre las piernas extendiendo caderas y rodillas.|1,3|movement
+front-foot-elevated-split-squat|Sentadilla dividida con pie delantero elevado|Apoya el pie delantero en una plataforma estable y desciende entre ambas piernas con las mancuernas a los lados.|3,1|movement
+deficit-reverse-lunge|Zancada atrás desde plataforma|Empieza sobre una plataforma baja, lleva un pie atrás al suelo y baja controladamente con el otro pie elevado.|3,2|movement
+dumbbell-lateral-lunge|Zancada lateral con mancuernas|Da un paso al lado y flexiona esa rodilla llevando la cadera atrás mientras la otra pierna permanece extendida.|3,1|movement
+dumbbell-curtsy-lunge|Zancada cruzada con mancuernas|Cruza una pierna por detrás y baja ambas rodillas sin forzar el giro de la rodilla delantera.|3,1|movement
+landmine-squat|Sentadilla con barra anclada|Sostén el extremo de la barra junto al pecho y baja entre los pies manteniendo el tronco estable.|3,1|movement
+landmine-romanian-deadlift|Peso muerto rumano con barra anclada|Sujeta el extremo de la barra con ambas manos y lleva la cadera atrás antes de volver a extenderla.|3,1|movement
+kettlebell-swing|Balanceo con pesa rusa|Impulsa la pesa con una extensión de cadera y deja que vuelva entre las piernas sin elevarla con los hombros.|3,1|cycle
+glute-focused-back-extension|Extensión en banco con énfasis en glúteos|Apoya la cadera en el banco y extiéndela contrayendo los glúteos, sin terminar arqueando la zona lumbar.|0|blocked
+reverse-hyperextension|Extensión inversa de cadera|Apoya el torso y eleva las piernas hacia atrás desde la cadera, sin impulsar la zona lumbar.|0|blocked
+donkey-calf-raise|Elevación de talones con tronco inclinado|Inclina el tronco sobre un apoyo, coloca la carga sobre la pelvis y eleva los talones con piernas estables.|0|blocked
+leg-press-calf-raise|Elevación de talones en prensa|Apoya el antepié en el borde de la plataforma y mueve solo los tobillos, conservando las rodillas ligeramente flexionadas.|3,1|movement
+wall-sit|Sentadilla isométrica en pared|Apoya la espalda en la pared y deslízate hasta una flexión cómoda de rodillas; mantén la postura respirando.|3,1|hold
+jump-squat|Sentadilla con salto|Baja en sentadilla, impulsa el suelo y aterriza suavemente flexionando las rodillas antes de repetir.|3,1|cycle
+incline-dumbbell-curl|Curl de bíceps en banco inclinado|Con la espalda apoyada y los brazos colgando, flexiona los codos sin adelantar los hombros.|3,1|movement
+concentration-curl|Curl concentrado|Apoya el codo en la cara interna del muslo y acerca la mancuerna al hombro sin mover el brazo de apoyo.|3,1|movement
+ez-bar-curl|Curl con barra EZ|Sujeta la barra curva en sus agarres y flexiona los codos manteniendo las muñecas alineadas.|3,1|movement
+spider-curl|Curl araña|Apoya el pecho en un banco inclinado, deja colgar los brazos y flexiona los codos sin separar el torso.|0|blocked
+rope-hammer-curl|Curl martillo con cuerda|Sujeta los extremos de la cuerda con palmas enfrentadas y flexiona los codos desde la polea baja.|3,1|movement
+drag-curl|Curl de arrastre con barra|Desliza la barra cerca del torso al flexionar los codos y llevarlos ligeramente atrás.|3,1|movement
+rope-tricep-pushdown|Extensión de tríceps con cuerda|Extiende los codos junto al cuerpo y separa suavemente los extremos de la cuerda al llegar abajo.|3,1|movement
+dumbbell-skull-crusher|Extensión de tríceps tumbado con dos mancuernas|Con dos mancuernas sobre el pecho, flexiona los codos a los lados de la cabeza y vuelve a extender.|0|blocked
+single-dumbbell-skullcrusher|Extensión de tríceps tumbado con una mancuerna|Sujeta una mancuerna con ambas manos y flexiona los codos hacia detrás de la cabeza sin mover los hombros.|1,3|movement
+dumbbell-overhead-tricep-extension|Extensión de tríceps sentado con mancuerna|Sostén la mancuerna con ambas manos sobre la cabeza y flexiona los codos para bajarla detrás de ella.|1,3|movement
+single-arm-dumbbell-tricep-extension|Extensión de tríceps a una mano|Eleva un brazo y baja la mancuerna detrás de la cabeza flexionando el codo, sin inclinar el tronco.|3,1|movement
+bench-dip|Fondos en banco|Apoya las manos en un banco estable y flexiona los codos con la cadera cerca del borde, usando un recorrido cómodo.|1,3|movement
+tricep-kickback|Patada de tríceps con mancuerna|Inclina el tronco y fija el brazo a su lado; extiende el codo llevando la mancuerna hacia atrás.|3,1|movement
+wrist-extension|Extensión de muñecas con mancuernas|Apoya los antebrazos con palmas hacia abajo y eleva las manos moviendo únicamente las muñecas.|0|blocked
+farmer-carry|Paseo del granjero|Camina con una mancuerna en cada mano, tronco erguido y pasos controlados, sin dejar que las cargas se balanceen.|1,3|cycle
+crunch|Encogimiento abdominal|Túmbate con las rodillas flexionadas y eleva los hombros acercando las costillas a la pelvis sin tirar del cuello.|3,1|movement
+reverse-crunch|Encogimiento abdominal inverso|Desde tumbado, acerca las rodillas al pecho elevando ligeramente la pelvis y vuelve sin impulso.|3,1|movement
+russian-twist|Giros rusos sin carga|Siéntate con rodillas flexionadas y gira el tronco hacia ambos lados manteniendo las manos juntas, sin carga externa.|0|blocked
+bicycle-crunch|Abdominal bicicleta|Acerca un codo a la rodilla contraria mientras extiendes la otra pierna; alterna sin tirar de la cabeza.|1,3|cycle
+mountain-climber|Escaladores|Desde una plancha alta, alterna las rodillas hacia el pecho manteniendo las manos debajo de los hombros.|2,1|cycle
+dead-bug|Bicho muerto|Tumbado con brazos elevados, extiende brazo y pierna contrarios sin despegar la zona lumbar del suelo.|3,1|movement
+bird-dog|Extensión contralateral en cuadrupedia|Desde cuatro apoyos, extiende un brazo y la pierna contraria manteniendo la pelvis nivelada.|2,1|movement
+pallof-press|Press Pallof en polea|De lado a la polea, aleja las manos del pecho resistiendo el giro del tronco.|1,3|movement
+cable-woodchop|Giro diagonal en polea|Lleva el agarre desde arriba junto al hombro hacia la cadera contraria, coordinando el giro del torso.|3,1|movement
+half-kneeling-pallof-press|Press Pallof con una rodilla apoyada|Con una rodilla en el suelo y la polea al lado, extiende los brazos sin girar la pelvis.|3,1|movement
+cable-pallof-hold|Sujeción Pallof en polea|De lado a la polea, mantén los brazos extendidos delante del pecho sin dejar que el cable te gire.|1,3|hold
+hanging-knee-raise|Elevación de rodillas colgado|Cuelga de la barra y acerca ambas rodillas al pecho, controlando el descenso para evitar balanceos.|3,1|movement
+captains-chair-knee-raise|Elevación de rodillas con antebrazos apoyados|Apoya los antebrazos en la estación y eleva las rodillas sin separar la espalda del respaldo.|3,1|movement
+decline-sit-up|Abdominal en banco declinado|Fija los pies y eleva el tronco desde el banco, manteniendo el cuello relajado durante el descenso.|3,1|movement
+weighted-crunch|Encogimiento abdominal con disco|Sujeta el disco junto al pecho y eleva los hombros acercando costillas y pelvis, sin incorporarte por completo.|3,1|movement
+weighted-russian-twist|Giros rusos con mancuerna|Sostén una mancuerna junto al abdomen y gira el tronco a ambos lados conservando el control de la postura.|1,3|cycle
+dumbbell-side-bend|Inclinación lateral con mancuerna|Sujeta una mancuerna a un lado y flexiona el tronco lateralmente, sin girarlo ni impulsarte.|3,1|movement
+elliptical|Elíptica|Alterna el empuje de piernas y brazos sobre los pedales, manteniendo el tronco erguido.|1,2|cycle
+swimming|Natación|Coordina la brazada con la respiración y el batido de piernas, manteniendo el cuerpo alargado en el agua.|0|blocked
+jump-rope|Salto de cuerda|Gira la cuerda con las muñecas y realiza saltos bajos, aterrizando suavemente sobre el antepié.|3,1|cycle
+assault-bike|Bicicleta de aire|Pedalea mientras alternas el empuje y el tirón de los brazos, manteniendo la cadera estable en el sillín.|1,3|cycle
+skierg|Ergómetro de esquí|Desde brazos elevados, tira de las empuñaduras hacia las caderas coordinando una ligera flexión de rodillas y tronco.|1,2|cycle
+hiking|Senderismo|Avanza con pasos estables adaptados al terreno y acorta la zancada en las pendientes.|0|blocked
+treadmill-incline-walk|Caminata en cinta inclinada|Ajusta la pendiente y camina sin colgarte de las barandillas, manteniendo los apoyos bajo el cuerpo.|1,3|cycle
+battle-ropes|Ondas con cuerdas|Con rodillas ligeramente flexionadas, alterna movimientos de brazos para enviar ondas por las cuerdas sin girar el tronco.|1,3|cycle
+incline-push-up|Flexiones con manos elevadas|Apoya las manos en un banco estable y baja el pecho hacia el borde manteniendo el cuerpo alineado.|1,3|movement
+knee-push-up|Flexiones con rodillas apoyadas|Apoya manos y rodillas; baja el pecho conservando una línea estable entre hombros, cadera y rodillas.|3,1|movement
+wide-push-up|Flexiones con manos separadas|Coloca las manos algo más abiertas que los hombros y flexiona los codos con el tronco alineado.|1,3|movement
+diamond-push-up|Flexiones con manos juntas|Acerca las manos bajo el pecho y flexiona los codos sin separar la cadera de la alineación corporal.|3,1|movement
+decline-push-up|Flexiones con pies elevados|Apoya los pies en un banco estable y baja el pecho hacia el suelo manteniendo el abdomen firme.|3,1|movement
+pike-push-up|Flexiones en pica|Eleva la cadera formando una V invertida y flexiona los codos llevando la cabeza hacia el suelo entre las manos.|3,1|movement
+feet-elevated-pike-push-up|Flexiones en pica con pies elevados|Con los pies sobre un banco y la cadera alta, baja la cabeza entre las manos y empuja el suelo.|3,1|movement
+archer-push-up|Flexiones de arquero|Separa las manos y desplaza el pecho hacia una de ellas mientras mantienes el otro brazo más extendido.|2,1|movement
+typewriter-push-up|Flexiones con desplazamiento lateral|Desde una flexión baja con manos separadas, desplaza el pecho de un lado al otro sin elevar mucho el tronco.|1,3|cycle
+explosive-push-up|Flexiones explosivas|Baja el pecho y empuja con rapidez para despegar las manos; aterriza con los codos suaves antes de repetir.|2,3|cycle
+hindu-push-up|Flexiones hindúes|Desde cadera elevada, pasa el pecho cerca del suelo y extiende los brazos levantando el torso antes de volver.|3,1|cycle
+scapular-push-up|Flexiones escapulares|En plancha con codos extendidos, acerca y separa las escápulas moviendo el pecho ligeramente entre los brazos.|1,3|movement
+push-up-shoulder-tap|Flexión con toque de hombro|Realiza una flexión y al subir toca el hombro contrario con una mano, evitando girar la pelvis.|0|blocked
+wall-push-up|Flexiones en pared|Apoya las manos en la pared y acerca el pecho flexionando los codos, manteniendo talones y tronco estables.|1,3|movement
+wall-walk|Caminata de manos hacia la pared|Desde una plancha con pies junto a la pared, sube los pies mientras acercas las manos de forma controlada.|1,3|movement
+wall-handstand-push-up|Flexiones invertidas en pared|Con los pies apoyados en la pared, flexiona los codos hacia un apoyo de cabeza protegido y vuelve a extender.|3,1|movement
+handstand-push-up|Flexiones invertidas en paralelas bajas|Desde un equilibrio invertido sobre paralelas bajas firmes, flexiona los codos y vuelve a empujar; requiere dominio previo del apoyo invertido.|3,1|movement
+chair-dip|Fondos en silla|Usa una silla firme inmovilizada; flexiona los codos manteniendo la cadera cerca del borde y vuelve a subir.|3,1|movement
+doorway-row|Remo en marco estable|Sujeta un soporte diseñado para soportar tu peso y acerca el pecho flexionando los codos sin doblar la cadera.|3,1|movement
+towel-row|Remo con toalla anclada|Ancla la toalla a un soporte resistente y tira del cuerpo hacia las manos manteniendo el tronco alineado.|0|blocked
+prone-y-raise|Elevación en Y tumbado|Boca abajo, eleva los brazos en diagonal formando una Y sin encoger los hombros ni arquear la espalda.|3,1|movement
+prone-t-raise|Elevación en T tumbado sin carga|Boca abajo, abre y eleva los brazos formando una T sin añadir carga ni extender en exceso la espalda.|0|blocked
+superman|Extensión Superman|Boca abajo, eleva suavemente brazos y piernas alargando el cuerpo y vuelve al suelo sin movimientos bruscos.|3,1|movement
+superman-hold|Superman isométrico|Boca abajo, mantén brazos y piernas ligeramente elevados sin comprimir el cuello ni arquear en exceso la espalda.|3,1|hold
+reverse-snow-angel|Ángel invertido|Boca abajo, desplaza los brazos desde los costados hacia encima de la cabeza sin apoyar las manos ni encoger los hombros.|3,1|movement
+dead-hang|Suspensión pasiva en barra|Sujeta la barra y deja el cuerpo suspendido con brazos extendidos, manteniendo un agarre firme.|1,2|hold
+active-hang|Suspensión activa en barra|Cuelga con codos extendidos y aleja los hombros de las orejas activando la espalda sin flexionar los brazos.|3,1|hold
+scapular-pull-up|Dominadas escapulares|En suspensión con codos rectos, eleva ligeramente el cuerpo al bajar las escápulas y vuelve con control.|3,1|movement
+negative-pull-up|Dominadas negativas|Empieza arriba con ayuda de un apoyo y desciende lentamente hasta extender los codos, sin saltar para repetir.|3,1|movement
+commando-pull-up|Dominadas comando|Sujeta la barra con las manos en línea y eleva el cuerpo pasando la cabeza a un lado y luego al otro.|0|blocked
+l-sit-pull-up|Dominadas con piernas en L|Mantén las piernas extendidas delante de la cadera mientras flexionas los codos para acercarte a la barra.|3,1|movement
+towel-pull-up|Dominadas con toallas|Sujeta dos toallas fijadas sobre una barra resistente y eleva el cuerpo manteniendo firmes los agarres.|3,1|movement
+bodyweight-squat|Sentadilla sin carga|Separa los pies a una anchura cómoda y baja entre las piernas con los talones apoyados antes de volver a subir.|3,1|movement
+pistol-squat|Sentadilla a una pierna|Extiende una pierna delante y baja sobre la otra manteniendo el talón apoyado; sube sin dejar caer la rodilla hacia dentro.|3,1|movement
+assisted-pistol-squat|Sentadilla a una pierna con apoyo|Sujeta un apoyo fijo y desciende sobre una pierna mientras mantienes la otra extendida delante.|3,1|movement
+shrimp-squat|Sentadilla camarón|Flexiona una pierna hacia atrás y baja sobre la pierna de apoyo hasta acercar la rodilla libre al suelo.|3,2|movement
+cossack-squat|Sentadilla cosaca|Desde una postura amplia, desplaza la cadera a un lado flexionando esa rodilla y dejando la otra pierna extendida.|2,1|movement
+sissy-squat|Sentadilla sissy con apoyo|Con un apoyo estable, avanza las rodillas e inclina el cuerpo atrás manteniendo cadera y tronco alineados.|3,1|movement
+forward-lunge|Zancada adelante sin carga|Da un paso amplio hacia delante, flexiona ambas rodillas y empuja con el pie delantero para regresar.|3,1|movement
+lateral-lunge|Zancada lateral sin carga|Da un paso al lado y lleva la cadera atrás mientras flexionas esa rodilla y conservas extendida la otra pierna.|2,1|movement
+curtsy-lunge|Zancada cruzada sin carga|Lleva una pierna por detrás de la otra y baja con control, manteniendo estable la rodilla delantera.|3,1|movement
+skater-squat|Sentadilla del patinador|Desciende sobre una pierna llevando la rodilla libre hacia atrás y abajo, sin apoyar el pie libre.|0|blocked
+single-leg-box-squat|Sentadilla a una pierna al cajón|Desde una pierna, baja hasta tocar suavemente el cajón con la cadera y vuelve a subir sin dejarte caer.|3,1|movement
+step-down|Bajada controlada de escalón|Desde un escalón, flexiona la pierna de apoyo para acercar el talón contrario al suelo y vuelve a subir.|3,1|movement
+calf-raise|Elevación de talones sin carga|Con un apoyo para equilibrarte, eleva los talones manteniendo las rodillas estables y baja con control.|3,1|movement
+single-leg-calf-raise|Elevación de talón a una pierna|Mantén una pierna libre y eleva el talón del pie apoyado sin inclinar el tobillo hacia los lados.|3,1|movement
+glute-bridge-march|Marcha en puente de glúteos|Mantén la pelvis elevada y alterna levantar un pie sin dejar que la cadera rote o descienda.|2,1|cycle
+frog-pump|Puente de glúteos con plantas juntas|Junta las plantas de los pies, abre las rodillas y eleva la pelvis desde el suelo contrayendo los glúteos.|3,1|movement
+donkey-kick|Patada de glúteo en cuadrupedia|Desde cuatro apoyos, eleva una pierna con rodilla flexionada sin girar la pelvis ni arquear la espalda.|3,1|movement
+fire-hydrant|Abducción en cuadrupedia|Mantén la rodilla flexionada y sepárala hacia el lado sin desplazar el peso ni rotar el tronco.|3,1|movement
+clamshell|Apertura de rodillas tumbado de lado|Con caderas y rodillas flexionadas y pies juntos, abre la rodilla superior sin girar la pelvis.|0|blocked
+hip-airplane|Rotación de cadera en apoyo unipodal|Inclina el tronco sobre una pierna y abre y cierra la pelvis con control, usando un apoyo si lo necesitas.|1,3|movement
+side-lying-hip-abduction|Abducción de cadera tumbado de lado|Apoya el cuerpo de lado y eleva la pierna superior recta sin girar el pie hacia el techo.|3,1|movement
+side-lying-leg-raise|Elevación lateral de pierna|Túmbate de lado con la cabeza apoyada y eleva la pierna superior manteniendo ambas caderas alineadas.|3,1|movement
+lying-hamstring-walkout|Caminata de talones desde puente|Eleva la pelvis y aleja los talones con pequeños pasos; vuelve acercándolos sin dejar caer la cadera.|0|blocked
+towel-hamstring-curl|Curl femoral deslizante con toalla|Apoya los talones sobre toallas en suelo deslizante y flexiona las rodillas manteniendo la pelvis elevada.|0|blocked
+stability-ball-hamstring-curl|Curl femoral con pelota|Boca arriba con talones sobre la pelota, eleva la pelvis y acerca la pelota flexionando las rodillas.|0|blocked
+banded-glute-bridge|Puente de glúteos con banda|Coloca una banda sobre las rodillas y eleva la pelvis desde el suelo manteniendo las rodillas separadas.|3,1|movement
+banded-hip-thrust|Empuje de cadera con banda|Apoya la espalda alta en un banco y eleva la pelvis mientras mantienes tensión lateral contra la banda.|3,1|movement
+banded-frog-pump|Puente con plantas juntas y banda|Con plantas juntas y banda sobre las rodillas, eleva la pelvis sin cerrar los muslos.|0|blocked
+banded-clamshell|Apertura de rodillas con banda|Tumbado de lado con pies juntos, abre la rodilla superior contra la banda y vuelve lentamente sin rotar la pelvis.|0|blocked
+banded-lateral-walk|Pasos laterales con banda|Mantén una ligera sentadilla y da pasos laterales cortos conservando la tensión de la banda entre las piernas.|3,1|cycle
+banded-monster-walk|Caminata diagonal con banda|Con rodillas flexionadas, avanza en pasos diagonales alternos sin perder la separación entre las piernas.|1,3|cycle
+banded-squat|Sentadilla con banda larga|Pisa la banda y sujeta sus extremos junto a los hombros; baja y sube en sentadilla manteniendo los talones apoyados.|3,1|movement
+banded-donkey-kick|Patada en cuadrupedia con banda|Con la banda asegurada, extiende la cadera elevando una rodilla flexionada sin mover la pelvis.|3,1|movement
+banded-fire-hydrant|Abducción en cuadrupedia con banda|Coloca la banda sobre las rodillas y abre una de ellas hacia el lado manteniendo el tronco estable.|3,1|movement
+banded-kickback|Patada atrás con banda|Fija la banda a un anclaje estable y lleva la pierna hacia atrás sin extender la zona lumbar.|3,1|movement
+banded-standing-hip-abduction|Abducción de pie con banda|Con la banda alrededor de las piernas, separa una pierna hacia el lado sin inclinar el tronco.|3,1|movement
+banded-seated-hip-abduction|Abducción sentado con banda|Siéntate con pies apoyados y separa las rodillas contra la banda conservando la pelvis quieta.|3,1|movement
+band-pull-apart|Apertura de banda frente al pecho|Sostén la banda con brazos al frente y separa las manos hasta acercarla al pecho sin encoger los hombros.|3,1|movement
+banded-face-pull|Tirón a la cara con banda|Ancla la banda a la altura de la cara y tira hacia ti separando las manos y abriendo los codos.|3,1|movement
+banded-row|Remo con banda|Frente a un anclaje estable, lleva los codos hacia atrás y acerca los extremos de la banda a las costillas.|3,1|movement
+banded-lat-pulldown|Jalón con banda|Ancla la banda por encima de la cabeza y lleva los codos hacia abajo sin inclinar el torso hacia atrás.|3,1|movement
+banded-pallof-press|Press Pallof con banda|De lado al anclaje, extiende los brazos desde el pecho resistiendo el giro de la banda.|1,3|movement
+banded-woodchop|Giro diagonal con banda|Con la banda anclada, mueve ambas manos en diagonal entre una cadera y el hombro contrario controlando el tronco.|3,1|movement
+banded-dead-bug|Bicho muerto con banda|Boca arriba, mantén tensión en la banda y alterna extender las piernas sin despegar la zona lumbar.|2,1|movement
+hollow-body-hold|Sujeción abdominal en hueco|Tumbado, eleva ligeramente brazos y piernas y presiona la zona lumbar contra el suelo sin contener la respiración.|0|blocked
+hollow-rock|Balanceo abdominal en hueco|Mantén el cuerpo en una curva rígida con la zona lumbar apoyada y balancéate suavemente sin plegarte por la cadera.|1,3|cycle
+v-up|Abdominal en V|Desde tumbado, eleva a la vez tronco y piernas para acercar las manos a los pies y baja controladamente.|3,1|movement
+flutter-kick|Patadas alternas tumbado|Boca arriba, alterna pequeñas elevaciones de piernas manteniendo la zona lumbar estable contra el suelo.|1,2|cycle
+lying-leg-raise|Elevación de piernas tumbado|Desde tumbado, eleva ambas piernas sin impulso y bájalas solo hasta donde puedas mantener estable la espalda.|3,1|movement
+toe-touch|Toque de pies abdominal|Boca arriba con piernas elevadas, levanta los hombros acercando las manos a los pies sin tirar del cuello.|0|blocked
+heel-tap|Toques de talón|Con rodillas flexionadas y hombros elevados, inclina el tronco a los lados para acercar cada mano al talón correspondiente.|1,3|cycle
+plank-shoulder-tap|Plancha con toque de hombro|En plancha alta, alterna tocar el hombro contrario con cada mano sin girar la pelvis.|2,1|movement
+plank-jack|Plancha con apertura de piernas|Mantén una plancha alta y abre y cierra las piernas con pequeños saltos, sin hundir la cintura.|0|blocked
+bear-plank|Plancha de oso|Desde cuatro apoyos, eleva las rodillas unos centímetros conservando la espalda neutra y las manos bajo los hombros.|0|blocked
+bear-crawl|Gateo de oso|Avanza con mano y pie contrarios, manteniendo las rodillas cerca del suelo y la pelvis estable.|1,3|cycle
+crab-walk|Caminata de cangrejo|Apoya manos detrás de la cadera y pies en el suelo; eleva la pelvis y avanza con pasos cortos.|3,1|cycle
+inchworm|Caminata de manos desde de pie|Inclina el tronco, apoya las manos y camina con ellas hasta una plancha; vuelve con pasos cortos.|2,3|movement
+l-sit-hold|Sujeción en L|Apóyate en paralelas, extiende los codos y mantén las piernas elevadas delante de la cadera.|3,1|hold
+seated-knee-tuck|Recogida de rodillas sentado|Apoya las manos junto a las caderas y acerca las rodillas al pecho mientras equilibras el tronco sobre un banco.|0|blocked
+side-plank-hip-dip|Plancha lateral con descenso de cadera|Desde una plancha lateral, baja ligeramente la pelvis y vuelve a elevarla manteniendo el hombro sobre el codo.|1,3|movement
+copenhagen-plank|Plancha de Copenhague|Apoya la pierna superior en un banco y el antebrazo en el suelo; eleva la pelvis y mantén el cuerpo alineado.|2,1|hold
+dragon-flag|Bandera abdominal en espaldera|Sujeta firmemente la espaldera y baja el cuerpo extendido de forma controlada, sin arquear la espalda; es una variante avanzada en suspensión.|3,1|movement
+burpee|Burpee|Apoya las manos, lleva los pies atrás a plancha, vuelve a acercarlos y termina con un salto suave.|1,3|cycle
+half-burpee|Medio burpee|Desde plancha alta, acerca ambos pies a las manos y vuelve a extender las piernas sin salto vertical.|0|blocked
+squat-thrust|Salto de pies a plancha|Desde cuclillas con manos apoyadas, lleva ambos pies atrás a plancha y vuelve a recogerlos bajo el cuerpo.|0|blocked
+high-knees|Carrera con rodillas altas|Alterna elevar las rodillas mientras corres en el sitio, manteniendo el tronco erguido y apoyos ligeros.|1,3|cycle
+jumping-jack|Saltos con apertura de brazos y piernas|Salta separando pies y elevando brazos; vuelve con pies juntos y brazos a los lados, aterrizando suavemente.|3,1|cycle
+skater-hop|Saltos de patinador|Salta lateralmente de una pierna a la otra y amortigua cada apoyo manteniendo el equilibrio.|1,3|cycle
+lateral-shuffle|Desplazamiento lateral|Con rodillas ligeramente flexionadas, desplázate al lado con pasos cortos sin cruzar los pies.|1,3|cycle
+fast-feet|Pasos rápidos en escalera de agilidad|Alterna apoyos cortos y rápidos entre los espacios de la escalera de agilidad, manteniendo la cadera estable y las rodillas suaves.|1,3|cycle
+sprawl|Extensión rápida a plancha|Desde una postura atlética, apoya las manos y lleva los pies atrás; recoge las piernas para volver a levantarte.|3,1|cycle
+seal-jack|Saltos con apertura horizontal de brazos|Salta abriendo las piernas y los brazos a los lados; vuelve juntando pies y manos delante del pecho.|0|blocked
+cat-cow-stretch|Movilidad de columna gato-vaca|En cuadrupedia, alterna redondear y extender suavemente la columna acompañando el movimiento con la respiración.|1,3|cycle
+arm-circles|Círculos de brazos|Extiende los brazos hacia los lados y dibuja círculos controlados, aumentando el tamaño solo dentro de un recorrido cómodo.|1,3|cycle
+worlds-greatest-stretch|Zancada con rotación torácica|Desde una zancada larga con una mano en el suelo, gira el pecho y eleva el brazo del lado de la pierna adelantada.|3,1|movement
+leg-swings-stretch|Balanceos de pierna|Sujeta un apoyo estable y balancea una pierna adelante y atrás sin mover la pelvis en exceso.|3,1|cycle
+torso-twist-stretch|Rotaciones suaves de tronco|De pie con rodillas suaves, gira el tronco a ambos lados sin carga y sin forzar el final del recorrido.|0|blocked
+doorway-chest-stretch|Estiramiento de pecho en marco|Apoya los antebrazos en el marco y adelanta suavemente el cuerpo hasta notar tensión cómoda en el pecho.|3,1|hold
+childs-pose|Postura del niño|Desde cuatro apoyos, lleva la cadera hacia los talones y alarga los brazos por el suelo sin forzar los hombros.|3,1|hold
+kneeling-hip-flexor-stretch|Estiramiento de flexores de cadera|Con una rodilla en el suelo, lleva ligeramente la pelvis hacia delante sin arquear la zona lumbar.|3,1|hold
+hamstring-stretch|Estiramiento de isquiotibiales con apoyo|Apoya un talón sobre una superficie estable e inclina el tronco desde la cadera conservando la espalda alargada.|3,1|hold
+standing-quad-stretch|Estiramiento de cuádriceps de pie|Sujeta un tobillo detrás del cuerpo y acerca suavemente el talón al glúteo manteniendo las rodillas próximas.|3,1|hold
+seated-forward-fold-stretch|Flexión anterior sentado|Siéntate con piernas extendidas e inclina el tronco desde la cadera hacia los pies sin rebotar.|3,2|hold
+cross-body-shoulder-stretch|Estiramiento de hombro cruzado|Lleva un brazo delante del pecho y acércalo con la otra mano manteniendo el hombro alejado de la oreja.|3,1|hold
+wall-calf-stretch|Estiramiento de pantorrilla en pared|Apoya las manos en la pared, lleva una pierna atrás y conserva su talón apoyado con la rodilla extendida.|3,1|hold
+butterfly-stretch|Estiramiento de mariposa|Siéntate con las plantas juntas y deja abrir las rodillas mientras alargas la espalda, sin empujarlas bruscamente.|1,2|hold

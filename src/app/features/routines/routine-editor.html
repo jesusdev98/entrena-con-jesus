@@ -1,0 +1,45 @@
+<section class="stack" aria-label="Editor de rutina">
+  <h2>Planificar rutina</h2>
+  <p class="notice">Objetivos planificados. Los borradores incompletos no son rutinas guardadas.</p>
+  <p role="status">{{ store.status() }}</p>
+  @if (store.error()) { <div class="error" role="alert"><p>{{ store.error() }}</p>
+    @if (store.loading()) { <button appButton (click)="store.initialize(personId(), editorKey(), planId())">Reintentar apertura</button> }
+    @if (store.errors().length) { <ul>@for (error of store.errors(); track $index) { <li>{{ error }}</li> }</ul> }
+  </div> }
+  @if (store.conflict()) {
+    <section class="notice stack" aria-label="Comparación de versiones"><h2>Compara antes de continuar</h2>
+      <app-routine-comparison label="Tu borrador" [name]="store.value().name" [content]="store.value().content" />
+      @if (store.current(); as current) {
+        <p>{{ current.archived ? 'La rutina está archivada.' : 'Versión guardada actualmente.' }}</p>
+        <app-routine-comparison label="Guardada" [name]="current.name" [content]="current.content" />
+        @if (!current.archived) {
+          <button appButton (click)="store.resolve('mine')">Conservar mis cambios sobre esta versión</button>
+          <button appButton variant="secondary" (click)="store.resolve('current')">Usar versión guardada</button>
+        }
+      }
+      @if (store.otherDraft(); as other) {
+        <app-routine-comparison label="Borrador del dispositivo" [name]="other.payload.name" [content]="other.payload.content" />
+        <button appButton variant="secondary" (click)="store.resolve('other')">Usar borrador del dispositivo</button>
+      }
+      <button appButton variant="secondary" (click)="store.resolve('copy')">Conservar como borrador de copia</button>
+    </section>
+  }
+  @if (!store.loading()) {
+    <fieldset class="stack" [disabled]="store.saving() || store.conflict()">
+      <legend>Nombre y semanas</legend>
+      <div class="stack" [formGroup]="form">
+        <div class="field"><label for="routine-name">Nombre de la rutina</label><input #nameInput id="routine-name" formControlName="name" maxlength="160" /></div>
+        <div class="field"><label for="routine-notes">Notas de la rutina</label><textarea id="routine-notes" formControlName="notes" maxlength="2000"></textarea></div>
+      </div>
+      @for (week of store.value().content.weeks; track week.id; let index = $index) {
+        <details open class="editor-card" data-testid="routine-week"><summary>Semana {{ index + 1 }} · {{ week.name || 'Sin nombre' }}</summary><div class="stack">
+          <app-row-actions [label]="'semana ' + (index + 1)" [first]="$first" [last]="$last" (action)="act(week, $event)" />
+          <app-week-editor [value]="week" (changed)="replaceWeek($event)" (pick)="pick($event)" />
+        </div></details>
+      }
+      <button type="button" appButton variant="secondary" (click)="addWeek()">Añadir semana</button>
+      <button type="button" appButton (click)="save()">{{ store.saving() ? 'Guardando…' : 'Guardar rutina válida' }}</button>
+    </fieldset>
+  }
+  <button type="button" appButton variant="secondary" [disabled]="store.saving()" (click)="close()">Volver a la lista conservando borrador</button>
+</section>

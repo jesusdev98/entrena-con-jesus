@@ -1,0 +1,31 @@
+adult|occupation|11580|work|Trabajo de oficina sentado, esfuerzo ligero
+adult|occupation|11582|work|Trabajo con ordenador sentado
+adult|occupation|11600|work|Trabajo de pie, esfuerzo ligero (tienda o barra)
+adult|occupation|11115|work|Cocinero o chef
+adult|occupation|11125|work|Limpieza laboral, esfuerzo ligero
+adult|occupation|11126|work|Limpieza laboral, esfuerzo moderado
+adult|occupation|11475|work|Trabajo manual general, esfuerzo ligero
+adult|occupation|11476|work|Trabajo manual general, esfuerzo moderado
+adult|occupation|11477|work|Trabajo manual general, esfuerzo vigoroso
+adult|occupation|11767|work|Conducción de camión de reparto, taxi o autobús
+adult|walking|17151|walking|Caminar a menos de 2 mph, terreno llano, muy despacio
+adult|walking|17170|walking|Caminar a 2,5 mph, superficie firme y llana
+adult|walking|17190|walking|Caminar a 2,8–3,4 mph, superficie firme y llana
+adult|walking|17200|walking|Caminar a 3,5–3,9 mph, superficie firme y llana
+adult|running|12020|running|Trotar, ritmo libre
+adult|running|12030|running|Correr a 5,0–5,2 mph
+adult|running|12050|running|Correr a 6,0–6,3 mph
+adult|bicycling|01010|cycling|Bicicleta recreativa a menos de 10 mph
+adult|bicycling|01030|cycling|Bicicleta a 12–13,9 mph, esfuerzo moderado
+adult|bicycling|01200|cycling|Bicicleta estática, general
+adult|conditioning-exercise|02054|resistance|Pesas, varios ejercicios, 8–15 repeticiones con resistencia variable
+adult|conditioning-exercise|02050|resistance|Pesas, levantamiento de potencia o culturismo, esfuerzo vigoroso
+adult|conditioning-exercise|02101|stretching|Estiramientos suaves
+older-adult|older-adult-compendium|1101060|work|Teclear en máquina de escribir u ordenador
+older-adult|older-adult-compendium|1715360|walking|Caminar a 2 mph, superficie firme y llana
+older-adult|older-adult-compendium|1717060|walking|Caminar a 2,2–2,7 mph, superficie firme y llana
+older-adult|older-adult-compendium|1719060|walking|Caminar a 2,8–3,2 mph, superficie firme y llana
+older-adult|older-adult-compendium|1202860|running|Correr a 3,6 mph (17 min/milla)
+older-adult|older-adult-compendium|0101060|cycling|Bicicleta estática, esfuerzo moderado
+older-adult|older-adult-compendium|0205360|resistance|Pesas, esfuerzo ligero
+older-adult|older-adult-compendium|0205460|resistance|Pesas, varios ejercicios, 8–15 repeticiones con resistencia variable

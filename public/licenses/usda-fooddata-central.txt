@@ -1,0 +1,28 @@
+USDA FoodData Central — offline source and license notice
+
+U.S. Department of Agriculture, Agricultural Research Service, Beltsville
+Human Nutrition Research Center. FoodData Central. [Internet]. Cited 2026-09-15.
+https://fdc.nal.usda.gov/
+
+The official site's Licensing section states that FoodData Central data are
+in the public domain, are not copyrighted, and are published under CC0 1.0
+Universal. No permission is needed for use; USDA requests source attribution.
+License reference: https://creativecommons.org/publicdomain/zero/1.0/
+This file is a local attribution/license notice, not the CC0 legal instrument.
+
+Pinned datasets used in catalogs/foods.es.json:
+- Foundation Foods, release 2026-04-30
+  https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_json_2026-04-30.zip
+  SHA256: 186e988ec542e913f51ef62b86a47758e8cdd0d1dc3889e7b055581f3c09c77a
+- SR Legacy, final April 2018 release (targeted common/cooked-food supplement)
+  https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip
+  SHA256: b80817294b8850530aaedf2e515c02593b1824f763a0ff356e5c2081643e6fd0
+
+Entrena con Jesús selected records, added Spanish display labels and preparation
+categories, and selected published kcal by application policy: nutrient 2048,
+then 2047, then 1008. This precedence is not a USDA requirement. Nutrient 1062
+is kJ and is not used as kcal. Published values are preserved per 100 g edible
+portion, without rounding, serving-volume conversion, cooking conversion, or
+4/4/9 recalculation. Original descriptions and FDC IDs accompany every entry.
+Spanish labels/selection are project adaptations, not USDA translations or
+endorsement. Raw archives and nested input-food/sample data are not bundled.

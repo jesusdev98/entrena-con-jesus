@@ -1,0 +1,23 @@
+Exercise artwork — Entrena con Jesús v1
+
+250 illustrated exercises, 500 selected SVG frames from 302 source records.
+52 exclusions (47 blocked, 5 unresolved) are unavailable in v1.
+
+Workout Guide by Bryl Lim (https://bryllim.com), revision aac599224bb9780305239607ef98540b7e0ce389
+https://github.com/bryllim/workout-guide/tree/aac599224bb9780305239607ef98540b7e0ce389
+Artwork license: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+Original collection foundation: Everkinetic — https://github.com/everkinetic/data
+Original collection foundation; direct frame adaptations and their changes are identified separately in upstream attribution.
+
+Per-frame source URLs, authors, licenses and original adaptation changes are in
+catalogs/exercises.es.json. Upstream adaptation: transparent 512 × 512 rasterization,
+monochrome recoloring and vector tracing where explicitly recorded by the source.
+Local changes: SVG bytes unchanged. Selected and ordered reviewed frames; added original Spanish names, aliases, instructions and presentation labels. No artwork recoloring or geometry changes.
+
+License text: workout-guide-LICENSE-ASSETS.txt
+Original attribution and licensing notices: workout-guide-ATTRIBUTION.md.txt and
+workout-guide-LICENSES.md.txt. Keep credits and license links with redistributed
+artwork and derivatives; adapted artwork remains under CC BY-SA 4.0.
+
+Visual semantic curation is not clinical, biomechanical or coaching certification.
+Static pairs are references or entry-to-hold; cyclic pairs omit intermediate phases.

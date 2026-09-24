@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "edition": "2024",
+  "retrievedOn": "2026-09-19",
+  "sources": [
+    {
+      "page": "home",
+      "url": "https://pacompendium.com/",
+      "path": "scripts/catalogs/met-sources/home.html",
+      "sha256": "67e8e3f0526b3189e0964adbef4a42a0f4f14fe7ea873ed816906cfc7e227d4a"
+    },
+    {
+      "page": "adult-compendium",
+      "url": "https://pacompendium.com/adult-compendium/",
+      "path": "scripts/catalogs/met-sources/adult-compendium.html",
+      "sha256": "dd6da2ff6a3d9644a6f96ca3b671bb07f982960f2baf6aeabe4b209d4592901d"
+    },
+    {
+      "page": "occupation",
+      "url": "https://pacompendium.com/occupation/",
+      "path": "scripts/catalogs/met-sources/occupation.html",
+      "sha256": "5488ba904cf184be429934f53e18aac7a83b50f04594d81b4cbaa5405bab2b13"
+    },
+    {
+      "page": "walking",
+      "url": "https://pacompendium.com/walking/",
+      "path": "scripts/catalogs/met-sources/walking.html",
+      "sha256": "20fab7986999b0ef2bdae6560d8fbf65f7da2b06250134a93cab869d091aded9"
+    },
+    {
+      "page": "conditioning-exercise",
+      "url": "https://pacompendium.com/conditioning-exercise/",
+      "path": "scripts/catalogs/met-sources/conditioning-exercise.html",
+      "sha256": "59ff530e47ce563fd6b497c733caa45d7aed600344f768574bd4979b92023dd6"
+    },
+    {
+      "page": "running",
+      "url": "https://pacompendium.com/running/",
+      "path": "scripts/catalogs/met-sources/running.html",
+      "sha256": "453a2e692d372a18568c8fcd151dff48ff83cc8b9df75a86e7849f100a928782"
+    },
+    {
+      "page": "bicycling",
+      "url": "https://pacompendium.com/bicycling/",
+      "path": "scripts/catalogs/met-sources/bicycling.html",
+      "sha256": "fbd9108813d15f929d1753a1817cb39fafd735217380292c714cd516c472574b"
+    },
+    {
+      "page": "older-adult-compendium",
+      "url": "https://pacompendium.com/older-adult-compendium/",
+      "path": "scripts/catalogs/met-sources/older-adult-compendium.html",
+      "sha256": "01024c141f08149ed02cb88e40cb8fdf33a4f4e4ef14413a385144931cd4641f"
+    }
+  ]
+}

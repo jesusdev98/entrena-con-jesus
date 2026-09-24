@@ -1,0 +1,64 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/.angular/
+/.atl/
+
+# Node
+/node_modules
+/.vercel/
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+.env
+.env.*
+!.env.example
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+.sass-cache/
+/connect.lock
+/coverage
+/test-results/
+/playwright-report/
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+._*
+/.catalog-cache/
+/catalog-review/
+
+# Local personal-data exports and internal session evidence (not release sources)
+/entrena-copia-completa*.json
+/entrena-plan-*.json
+/entrena-progreso-*.json
+/entrena-con-jesus-*.pdf
+/docs/implementation-progress.md

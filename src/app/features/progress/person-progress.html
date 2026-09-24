@@ -1,0 +1,31 @@
+<div class="stack">
+  <section class="notice"><h2>Historial de {{ person().displayName }}</h2><p>{{ person().reference }}</p><p class="identity">ID de la persona: {{ person().id }}</p></section>
+  <a appButton routerLink="/training">Registrar entrenamiento</a>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  <button appButton variant="secondary" (click)="load()">Actualizar historial</button>
+  @if (pdf.message()) { <p role="status">{{ pdf.message() }}</p> }
+  @if (pdf.error()) { <p role="alert" class="error">{{ pdf.error() }}</p> }
+  @if (loading()) { <p role="status">Cargando historial…</p> }
+  <form class="stack" [formGroup]="form">
+    <div class="field"><label for="history-week">Fecha de la semana</label><input id="history-week" type="date" formControlName="week" /></div>
+    <div class="actions"><button appButton variant="secondary" type="button" (click)="move(-7)">Semana anterior</button><button appButton variant="secondary" type="button" (click)="move(7)">Semana siguiente</button></div>
+    <div class="field"><label for="history-compare">Comparar con la semana de</label><input id="history-compare" type="date" formControlName="compare" /></div>
+    <div class="field"><label for="history-exercise">Filtrar por ejercicio</label><select id="history-exercise" formControlName="exercise"><option value="">Todos los ejercicios</option>@for (choice of choices(); track choice.id) { <option [value]="choice.id">{{ choice.name }} · {{ choice.id }}</option> }</select></div>
+    <div class="field"><label for="history-date">Fecha exacta (opcional)</label><input id="history-date" type="date" formControlName="date" aria-describedby="history-date-hint" /><small id="history-date-hint">Limita ambas semanas a esta fecha. Vacía el campo para ver semanas completas.</small></div>
+  </form>
+  <div class="actions"><button appButton variant="secondary" [disabled]="loading() || pdf.busy() || !weeks()[0]?.sessions.length" (click)="exportPdf()">Descargar PDF de entrenamientos reales de la semana</button>
+    @if (pdf.ready()?.owner === person().id && pdf.ready()?.selection === pdfSelection()) { <button appButton variant="secondary" [disabled]="pdf.busy()" (click)="pdf.share(person().id, pdfSelection())">Abrir o compartir último PDF de entrenamientos</button> }
+  </div>
+  @if (!loading() && !weeks()[0]?.sessions.length) { <p>No hay sesiones finalizadas para exportar con estos filtros.</p> }
+  <p>Semanas locales de lunes a domingo. Solo sesiones finalizadas; las series no realizadas no suman rendimiento. Los valores se conservan con la prescripción original.</p>
+  @if (!weeks().length) { <p role="alert">Indica fechas válidas para filtrar y comparar semanas.</p> }
+  @for (week of weeks(); track week.label) {
+    <section class="stack" [attr.aria-label]="week.label"><h2>{{ week.label }} · {{ week.date }} a {{ week.end }}</h2>
+      <p>{{ week.sessions.length }} sesiones · {{ count(week.sessions, exerciseId()) }} series realizadas</p>
+      @for (session of week.sessions; track session.id) { <app-card><app-session-summary [value]="session" [exerciseId]="exerciseId()" />
+        <a appButton variant="secondary" routerLink="/training" [queryParams]="{ session: session.id }">Corregir sesión del {{ session.date }} · {{ session.labels.routine }}</a></app-card> }
+      @if (!week.sessions.length) { <p>No hay sesiones guardadas con estos filtros.</p> }
+    </section>
+  }
+  <details><summary>Todas las fechas guardadas</summary><ul>@for (session of sessions(); track session.id) { <li><button appButton variant="secondary" (click)="openDate(session.date)">{{ session.date }} · {{ session.labels.routine }} · {{ session.labels.day }}</button></li> }</ul></details>
+</div>

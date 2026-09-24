@@ -1,0 +1,49 @@
+<app-card><div class="stack">
+  <h2>{{ exerciseId() ? 'Editar ejercicio personalizado' : 'Nuevo ejercicio personalizado' }}</h2>
+  <p>Datos aportados por esta persona. Los ejercicios personalizados no incluyen ilustraciones.</p>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (loading()) {
+    @if (!error()) { <p role="status">Cargando borrador…</p> }
+    @else { <button appButton (click)="initialize()">Reintentar lectura del borrador</button> }
+    <button appButton variant="secondary" (click)="close()">Cerrar formulario</button>
+  } @else {
+    <form class="stack" [formGroup]="form" (ngSubmit)="save()">
+      <div class="field"><label for="custom-exercise-name">Nombre del ejercicio</label>
+        <input #nameInput id="custom-exercise-name" formControlName="name" maxlength="160" required [attr.aria-invalid]="form.controls.name.touched && form.controls.name.invalid" aria-describedby="exercise-name-help" />
+        <small id="exercise-name-help">Obligatorio, hasta 160 caracteres.</small></div>
+      <div class="grid">
+        <div class="field"><label for="custom-exercise-category">Categoría</label>
+          <select id="custom-exercise-category" formControlName="category" required [attr.aria-invalid]="form.controls.category.touched && form.controls.category.invalid">
+            <option value="">Selecciona una categoría</option>
+            @for (item of categories; track item.key) { <option [value]="item.key">{{ item.label }}</option> }
+          </select></div>
+        <div class="field"><label for="custom-exercise-logging">Tipo de registro</label>
+          <select id="custom-exercise-logging" formControlName="loggingType" required [attr.aria-invalid]="form.controls.loggingType.touched && form.controls.loggingType.invalid" aria-describedby="exercise-logging-help">
+            <option value="">Selecciona un tipo</option>
+            @for (item of loggingTypes; track item.key) { <option [value]="item.key">{{ item.label }}</option> }
+          </select><small id="exercise-logging-help">Obligatorio. La asistencia se distingue del peso levantado; el registro de sesiones estará disponible más adelante.</small></div>
+      </div>
+      <div class="field"><label for="custom-exercise-equipment">Equipamiento (opcional)</label>
+        <input id="custom-exercise-equipment" formControlName="equipment" maxlength="500" aria-describedby="exercise-equipment-help" />
+        <small id="exercise-equipment-help">Separa los elementos con comas. Por ejemplo: Banda, Banco.</small></div>
+      <div class="field"><label for="custom-exercise-instruction">Instrucciones (opcional)</label>
+        <textarea id="custom-exercise-instruction" formControlName="instruction" maxlength="1000" rows="3"></textarea></div>
+      <div class="field"><label for="custom-exercise-notes">Notas (opcional)</label>
+        <textarea id="custom-exercise-notes" formControlName="notes" maxlength="1000" rows="3"></textarea></div>
+      <p role="status">{{ draftStatus() }}</p>
+      @if (conflict()) {
+        <div class="notice"><h3>Compara antes de guardar</h3>
+          @if (currentExercise(); as current) {
+            <p>Versión guardada: {{ current.name }}. {{ categoryLabels[current.category] }} · {{ loggingLabels[current.loggingType] }}.</p>
+            <p>Equipamiento: {{ current.equipment?.join(', ') || 'Sin especificar' }}. Instrucciones: {{ current.instruction || 'Sin instrucciones' }}. Notas: {{ current.notes || 'Sin notas' }}.</p>
+          }
+          <p>Tu borrador sigue en el formulario.</p><div class="actions">
+            <button appButton type="button" (click)="resolveConflict(true)">Conservar mi borrador</button>
+            <button appButton type="button" variant="secondary" (click)="resolveConflict(false)">Usar versión guardada</button>
+          </div></div>
+      }
+      <div class="actions"><button appButton type="submit" [disabled]="saving() || conflict()">{{ saving() ? 'Guardando…' : 'Guardar ejercicio' }}</button>
+        <button appButton type="button" variant="secondary" [disabled]="saving()" (click)="close()">Cerrar y conservar borrador</button></div>
+    </form>
+  }
+</div></app-card>

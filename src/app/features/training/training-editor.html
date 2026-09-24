@@ -1,0 +1,35 @@
+<div class="stack">
+  @if (store.error()) { <div class="error" role="alert"><p>{{ store.error() }}</p><ul>@for (error of store.errors(); track $index) { <li>{{ error }}</li> }</ul></div> }
+  <p role="status">{{ store.status() }}</p>
+  @if (store.value(); as session) {
+    <h2 #heading tabindex="-1">Registro · {{ session.labels.routine }} · {{ session.labels.day }}</h2>
+    <p>{{ session.labels.week }} · {{ session.labels.routineNotes }}</p>
+    <p>Los objetivos son una copia de la revisión elegida. Introduce lo realizado; ningún objetivo se completa automáticamente.</p>
+    <fieldset class="stack" [disabled]="store.saving() || store.conflict()" style="border: 0; padding: 0; min-width: 0">
+      <legend>Datos y series de la sesión</legend>
+      <div class="field"><label [for]="session.id + '-date'">Fecha local de la sesión</label><input [id]="session.id + '-date'" type="date" [formControl]="form.controls.date" /></div>
+      <app-number-field [id]="session.id + '-duration'" label="Duración de la sesión (min)" [control]="form.controls.duration" [min]="0" [max]="1440" step="any" hint="Opcional. Tiempo real total, incluidos descansos; no suma automáticamente las series." />
+      <div class="field"><label [for]="session.id + '-notes'">Notas de la sesión</label><textarea [id]="session.id + '-notes'" [formControl]="form.controls.notes" maxlength="2000"></textarea></div>
+      @for (exercise of session.exercises; track exercise.id; let ei = $index) {
+        <section class="stack" data-testid="logged-exercise"><h3>{{ ei + 1 }}. {{ exercise.exercise.name }}</h3><p>{{ exercise.notes }}</p>
+          <details><summary>Instrucciones e ilustraciones guardadas</summary><p>{{ exercise.exercise.instruction || 'Sin instrucciones adicionales.' }}</p>
+            @if (media(exercise); as media) { <app-exercise-pose-pair [name]="exercise.exercise.name" [media]="media" /> }
+            @else { <p>No hay ilustraciones asociadas.</p> }
+          </details>
+          @for (set of exercise.sets; track set.id) { <app-actual-set-editor [value]="set" [type]="type(exercise.exercise.loggingType)"
+            [label]="'serie ' + ($index + 1) + ', ejercicio ' + (ei + 1) + ' (' + exercise.exercise.name + ')'" (changed)="replace(exercise.id, $event)" /> }
+        </section>
+      }
+      <button appButton (click)="save()">{{ session.version ? 'Guardar corrección intencional' : 'Finalizar y guardar sesión' }}</button>
+      <p>Para finalizar parcialmente, marca cada serie pendiente como «No realizada». Solo las series completadas registran rendimiento.</p>
+    </fieldset>
+    @if (store.conflict()) {
+      <section class="stack notice" aria-label="Comparación de sesión"><h2>La sesión cambió en otra pestaña</h2><p>Revisa tus valores antes de descartarlos y recuperar la versión durable.</p>
+        <h3>Tus valores locales</h3><app-session-summary [value]="session" />
+        @if (store.remote(); as remote) { <h3>Valores durables</h3><app-session-summary [value]="remote" /> }
+        <button appButton variant="secondary" (click)="store.recover()">Descartar mis cambios y recuperar versión durable</button>
+      </section>
+    }
+    <button appButton variant="secondary" [disabled]="store.saving()" (click)="close()">Volver conservando borrador</button>
+  }
+</div>

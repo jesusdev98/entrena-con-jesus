@@ -1,0 +1,10 @@
+Compendium of Physical Activities, 2024 edition
+https://pacompendium.com/
+
+Herrmann SD et al. 2024 Adult Compendium of Physical Activities. Journal of Sport and Health Science 13(1):6–12. https://www.sciencedirect.com/science/article/pii/S2095254623001084
+Willis EA et al. Older Adult Compendium of Physical Activities. Journal of Sport and Health Science 13(1):13–17. https://www.sciencedirect.com/science/article/pii/S2095254623001059
+
+The official website permits free commercial use with citation and requests that MET values not be changed or activities with different MET levels combined. This is permission under the source's terms, not a claimed CC license.
+
+Entrena con Jesús selects a small subset and supplies Spanish display labels; source codes, descriptions (whitespace normalized), MET values and table oxygen references are retained. Adult MET: 3.5 ml/kg/min; older-adult MET60+: 2.7 ml/kg/min. Red source marks are retained as sourceEstimated; an unmarked code is not a clinical-accuracy guarantee.
+Source page hashes, retrieval date and URLs accompany the bundled catalog.

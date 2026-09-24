@@ -1,0 +1,10 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { generateMetCatalog, notice, noticePath } from './met-data.mjs';
+const protectedPaths = ['public/catalogs/foods.es.json', 'public/catalogs/exercises.es.json'];
+const before = await Promise.all(protectedPaths.map(path => readFile(path)));
+const catalog = await generateMetCatalog();
+await writeFile('public/catalogs/activity-mets.json', JSON.stringify(catalog) + '\n');
+await writeFile(`public/${noticePath}`, notice);
+for (const [index, path] of protectedPaths.entries()) assert.deepEqual(await readFile(path), before[index]);
+console.log(`Generated ${catalog.entries.length} sourced MET entries and notice; food/exercise bytes preserved.`);

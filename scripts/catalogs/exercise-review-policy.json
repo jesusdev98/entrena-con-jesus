@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "revision": "aac599224bb9780305239607ef98540b7e0ce389",
+  "decision": "User approved 250 illustrated exercises for v1, excluding 47 blocked and 5 unresolved records. Future expansion is allowed; exclusions are not available exercises.",
+  "earlierReview": "Source positions 1–192: existing Spanish overlay pairs and exercise-review-notes.json source-pair notes.",
+  "finalReview": {
+    "evidence": "User-supplied completed read-only visual review of source positions 193–302; persisted without claiming a new visual or clinical review.",
+    "start": 193,
+    "end": 302,
+    "defaultPair": [3, 1],
+    "pairExceptions": {
+      "1,3": [193, 198, 199, 236, 247, 262, 267, 271, 276, 279, 282, 284, 285, 286, 289, 290],
+      "2,3": [194, 273],
+      "2,1": [221, 224, 231, 260, 268, 277],
+      "3,2": [220, 299],
+      "1,2": [210, 264, 302]
+    },
+    "blockedPositions": [197, 204, 206, 214, 226, 235, 239, 240, 241, 244, 245, 261, 266, 269, 270, 275, 280, 281, 288, 293],
+    "unresolvedPositions": [196, 212, 243, 258, 287],
+    "holdPositions": [208, 210, 211, 274, 277, 294, 295, 296, 297, 298, 299, 300, 301, 302],
+    "referenceOnlyPositions": [210, 211, 277, 296, 301],
+    "cyclePositions": [193, 194, 195, 231, 246, 247, 262, 264, 267, 271, 272, 279, 282, 283, 284, 285, 286, 289, 290, 292]
+  },
+  "labels": {
+    "typewriter-push-up": ["Fase lateral A", "Fase lateral B"],
+    "explosive-push-up": ["Apoyo de manos", "Manos juntas en fase aérea"],
+    "hindu-push-up": ["Cadera elevada", "Torso elevado"],
+    "wall-push-up": ["Brazos extendidos en pared", "Acercamiento a la pared"],
+    "wall-walk": ["Apoyo inicial junto a la pared", "Apoyo invertido en pared"],
+    "glute-bridge-march": ["Puente con ambos pies", "Elevación de un pie"],
+    "banded-lateral-walk": ["Apoyo con banda", "Paso lateral de referencia"],
+    "banded-monster-walk": ["Paso diagonal: fase A", "Paso diagonal: fase B"],
+    "hollow-rock": ["Balanceo: fase A", "Balanceo: fase B"],
+    "flutter-kick": ["Piernas alternas: fase A", "Piernas alternas: fase B"],
+    "heel-tap": ["Alcance lateral A", "Alcance lateral B"],
+    "bear-crawl": ["Apoyo de gateo A", "Apoyo de gateo B"],
+    "crab-walk": ["Referencia de apoyo A", "Referencia de apoyo B"],
+    "burpee": ["Fase de apoyo", "Fase de salto"],
+    "high-knees": ["Rodilla elevada: fase A", "Rodilla elevada: fase B"],
+    "jumping-jack": ["Apoyo con pies juntos", "Apertura de brazos y piernas"],
+    "skater-hop": ["Apoyo lateral A", "Apoyo lateral B"],
+    "lateral-shuffle": ["Apoyo lateral: fase A", "Apoyo lateral: fase B"],
+    "fast-feet": ["Apoyo rápido A", "Apoyo rápido B"],
+    "cat-cow-stretch": ["Columna: fase A", "Columna: fase B"],
+    "leg-swings-stretch": ["Balanceo: fase A", "Balanceo: fase B"]
+  },
+  "notes": {
+    "crab-walk": "The drawing changes orientation; it is not evidence of forward travel.",
+    "burpee": "Only two phases of a longer sequence; intermediate steps are not pictured.",
+    "explosive-push-up": "Supplied review selects frames 2/3; two phases do not demonstrate the entire takeoff/landing cycle.",
+    "flutter-kick": "Supplied review selects frames 1/2, correcting the older overlay's 1/3 pair.",
+    "seated-forward-fold-stretch": "Supplied review selects frames 3/2, correcting the older overlay's 3/1 pair."
+  }
+}

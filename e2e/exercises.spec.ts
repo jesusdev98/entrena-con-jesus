@@ -1,0 +1,90 @@
+import { expect, test } from '@playwright/test';
+
+test('exercise first visit offline, search, filters, ordered credits, keyboard dialog and 320px', async ({ page, context }, testInfo) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto('/entrena/');
+  await page.getByRole('radio', { name: /Entrenador/ }).check();
+  await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Jesús');
+  await page.getByRole('button', { name: 'Crear mi espacio' }).click();
+  await expect(page.getByTestId('active-person-name')).toHaveText('Jesús');
+  await expect(page.getByRole('link', { name: /Ejercicios Búsqueda/ })).toHaveAttribute('href', '#/exercises');
+  await page.getByRole('link', { name: 'Ajustes', exact: true }).first().click();
+  await expect(page.getByText('Recursos de esta entrega disponibles sin conexión.', { exact: true })).toBeVisible({ timeout: 30000 });
+  expect(await page.evaluate(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    const manifest = await (await fetch(new URL('resource-manifest.json', document.baseURI))).json() as { resources: string[] };
+    const resources = await Promise.all([...manifest.resources, 'resource-manifest.json'].map(resource => caches.match(new URL(resource, document.baseURI))));
+    return registration.active?.state === 'activated' && navigator.serviceWorker.controller !== null &&
+      manifest.resources.includes('catalogs/exercises.es.json') && manifest.resources.filter(resource => /^exercises\/.*\.svg$/.test(resource)).length === 500 &&
+      resources.length > 1 && resources.every(response => response?.ok);
+  })).toBe(true);
+
+  await context.setOffline(true);
+  await page.reload();
+  await page.getByRole('navigation').getByRole('link', { name: 'Rutinas', exact: true }).click();
+  await page.getByRole('link', { name: 'Explorar ejercicios', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Ejercicios', exact: true })).toBeVisible();
+  await expect(page.getByText('250 ejercicios encontrados.', { exact: true })).toBeVisible();
+  const search = page.getByRole('searchbox', { name: 'Buscar ejercicio', exact: true });
+  await search.fill('banca plana');
+  await page.getByRole('combobox', { name: 'Categoría', exact: true }).selectOption('strength');
+  await page.getByRole('combobox', { name: 'Músculo', exact: true }).selectOption('Tríceps');
+  await page.getByRole('combobox', { name: 'Equipamiento', exact: true }).selectOption('Banco');
+  await expect(page.getByTestId('exercise-card')).toHaveCount(1);
+  const trigger = page.getByRole('button', { name: 'Ver detalles de Press de banca con barra', exact: true });
+  await trigger.focus(); await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toHaveAccessibleName('Press de banca con barra');
+  const close = dialog.getByRole('button', { name: 'Cerrar detalles', exact: true });
+  await expect(close).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(dialog.getByRole('link', { name: 'Aviso de atribución y licencias del catálogo' })).toBeFocused();
+  await page.keyboard.press('Tab'); await expect(close).toBeFocused();
+  await expect(dialog).toContainText('baja la barra al pecho');
+  await expect(dialog).toContainText('Barra, Banco');
+  const figures = dialog.locator('figure');
+  await expect(figures).toHaveCount(2);
+  for (const [index, frame, label] of [[0, 3, 'Barra cerca del pecho'], [1, 1, 'Brazos extendidos']] as const) {
+    const figure = figures.nth(index); const image = figure.getByRole('img');
+    await expect(image).toHaveAttribute('src', `exercises/bench-press-${frame}.svg`);
+    await expect(image).toHaveAttribute('alt', `Press de banca con barra — ${label}`);
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate(node => (node as HTMLImageElement).complete && (node as HTMLImageElement).naturalWidth > 0)).toBe(true);
+    await expect(figure.getByRole('link', { name: 'Bryl Lim', exact: true })).toHaveAttribute('href', 'https://bryllim.com');
+    await expect(figure.getByRole('link', { name: 'CC BY-SA 4.0', exact: true }).first()).toHaveAttribute('href', 'https://creativecommons.org/licenses/by-sa/4.0/');
+    await figure.locator('summary').click();
+    await expect(figure.getByRole('link', { name: `Archivo original · fotograma ${frame}` })).toHaveAttribute('href', new RegExp(`/bench-press/frame-${frame}\\.svg$`));
+    await expect(figure).toContainText('Cambios locales:');
+  }
+  expect(await figures.first().locator('.surface').evaluate(node => getComputedStyle(node).backgroundColor)).toBe('rgb(17, 24, 39)');
+  expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await close.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: testInfo.outputPath('exercise-detail-320.png') });
+  await page.keyboard.press('Escape'); await expect(trigger).toBeFocused();
+  await page.getByRole('combobox', { name: 'Categoría', exact: true }).selectOption('cardio');
+  await expect(page.getByRole('heading', { name: 'No hay ejercicios que coincidan' })).toBeVisible();
+  await page.getByRole('button', { name: 'Limpiar búsqueda y filtros' }).click();
+  await expect(page.getByText('250 ejercicios encontrados.', { exact: true })).toBeVisible();
+  await search.fill('suspension activa');
+  await page.getByRole('button', { name: 'Ver detalles de Suspensión activa en barra', exact: true }).click();
+  await expect(dialog).toContainText('Referencias estáticas');
+  await expect(dialog.locator('.poses')).toHaveAttribute('data-mode', 'hold');
+  await expect(dialog.locator('figure').first()).toContainText('Suspensión: referencia A');
+  await page.keyboard.press('Escape');
+  await search.fill('flexiones explosivas');
+  await page.getByRole('button', { name: 'Ver detalles de Flexiones explosivas', exact: true }).click();
+  await expect(dialog).toContainText('Secuencia parcial');
+  await expect(dialog.locator('figure img').first()).toHaveAttribute('src', 'exercises/explosive-push-up-2.svg');
+  await expect(dialog.locator('figure img').nth(1)).toHaveAttribute('src', 'exercises/explosive-push-up-3.svg');
+  await expect(dialog).toContainText('Manos juntas en fase aérea');
+  await page.keyboard.press('Escape');
+  await search.fill('sprawl');
+  await expect(page.getByRole('heading', { name: 'No hay ejercicios que coincidan' })).toBeVisible();
+  await search.fill('banca plana');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath('exercise-catalog-320.png'), fullPage: true });
+  await page.reload();
+  await expect(page.getByText('250 ejercicios encontrados.', { exact: true })).toBeVisible();
+  expect(new URL(page.url()).pathname).toBe('/entrena/');
+});

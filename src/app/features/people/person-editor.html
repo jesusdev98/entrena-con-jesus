@@ -1,0 +1,54 @@
+<app-card>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (conflict()) {
+    <p class="notice">Este perfil cambió en otra pestaña. Tu borrador se conserva y no reemplazará los cambios guardados. Revisa ambos antes de continuar.</p>
+    @if (currentProfile(); as current) {
+      <section class="notice stack" aria-label="Comparar perfil guardado">
+        <div><h2>Versión guardada</h2><p>{{ current.displayName }} · {{ current.reference || 'Sin referencia' }}</p>
+          <p>Edad: {{ current.profile.age ?? 'Sin especificar' }} · Altura: {{ current.profile.heightCm ?? 'Sin especificar' }} cm · Peso: {{ current.profile.weightKg ?? 'Sin especificar' }} kg</p>
+          <p>Sexo para la fórmula: {{ current.profile.formulaSex === 'male' ? 'Masculino' : current.profile.formulaSex === 'female' ? 'Femenino' : 'Sin especificar' }}</p>
+          <p>Tus cambios están en el formulario de abajo. Elige qué datos continuar editando.</p></div>
+        <div class="actions"><button appButton type="button" (click)="resolveConflict(true)">Conservar mis cambios visibles</button>
+          <button appButton variant="secondary" type="button" (click)="resolveConflict(false)">Usar perfil guardado</button></div>
+      </section>
+    }
+  }
+  @if (loading()) {
+    <p role="status">Abriendo el perfil local…</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()" class="stack">
+      <fieldset [disabled]="saving()" class="stack">
+        <div class="field">
+          <label for="person-name">Nombre</label>
+          <input id="person-name" formControlName="displayName" autocomplete="name" maxlength="100" placeholder="Nombre de la persona"
+            [attr.aria-invalid]="form.controls.displayName.touched && form.controls.displayName.invalid" aria-describedby="name-help" />
+          <small id="name-help">Obligatorio. Las personas con el mismo nombre se guardan por separado.</small>
+        </div>
+        <div class="field">
+          <label for="person-reference">Referencia para distinguir este perfil</label>
+          <input id="person-reference" formControlName="reference" maxlength="120" placeholder="Por ejemplo: grupo de la mañana" aria-describedby="reference-help" />
+          <small id="reference-help">Opcional. Te ayuda a distinguir personas con el mismo nombre.</small>
+        </div>
+        @if (!onboardingMode()) {
+          <details>
+            <summary>Medidas personales · opcional</summary>
+            <p class="muted">Puedes completar estos datos al usar alimentación. No son necesarios para crear rutinas.</p>
+            <div class="grid">
+              <app-number-field id="person-age" label="Edad (años)" [control]="form.controls.age" [min]="1" [max]="120" />
+              <div class="field"><label for="formula-sex">Sexo para la fórmula energética</label>
+                <select id="formula-sex" formControlName="formulaSex"><option [ngValue]="null">Sin especificar</option><option value="female">Femenino</option><option value="male">Masculino</option></select>
+                <small>Entrada de la fórmula, no identidad de género.</small></div>
+              <app-number-field id="person-height" label="Altura (cm)" [control]="form.controls.heightCm" [min]="30" [max]="280" [step]="0.1" />
+              <app-number-field id="person-weight" label="Peso (kg)" [control]="form.controls.weightKg" [min]="1" [max]="600" [step]="0.1" />
+            </div>
+          </details>
+        }
+      </fieldset>
+      <div class="actions"><button appButton type="submit" [disabled]="saving() || conflict()">{{ saving() ? 'Guardando…' : onboardingMode() ? 'Crear mi espacio' : 'Guardar perfil' }}</button>
+        @if (error() && !conflict()) { <button appButton variant="secondary" type="button" (click)="flush()">Reintentar borrador</button> }
+      </div>
+      <small role="status">{{ draftStatus() }}</small>
+      <p class="identity">ID del perfil: {{ identity() }}</p>
+    </form>
+  }
+</app-card>

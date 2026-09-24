@@ -1,0 +1,107 @@
+<div class="stack">
+  <section class="notice"><h2>Diario de {{ name() }}</h2><p class="identity">ID de la persona: {{ personId() }}</p>
+    <div class="field"><label for="diary-date">Fecha del diario</label>
+      <input id="diary-date" type="date" [value]="date()" (change)="changeDate($any($event.target).value)" /></div></section>
+  @if (error()) { <div class="error" role="alert">{{ error() }} <button appButton variant="secondary" (click)="load()">Actualizar diario</button></div> }
+  @if (message()) { <p role="status">{{ message() }}</p> }
+  @if (pdf.message()) { <p role="status">{{ pdf.message() }}</p> }
+  @if (pdf.error()) { <p role="alert" class="error">{{ pdf.error() }}</p> }
+  <div class="actions"><button appButton variant="secondary" [disabled]="loading() || busy() || pdf.busy() || !logs().length" (click)="exportPdf()">Descargar PDF del consumo real de {{ date() }}</button>
+    @if (pdf.ready()?.owner === personId() && pdf.ready()?.selection === date()) { <button appButton variant="secondary" [disabled]="pdf.busy()" (click)="pdf.share(personId(), date())">Abrir o compartir último PDF nutricional</button> }
+  </div>
+  @if (!loading() && !logs().length) { <p>No hay consumo real guardado para exportar en esta fecha.</p> }
+  @if (loading()) { <p role="status">Cargando diario…</p> }
+  @if (!loading()) {
+    <section class="stack" aria-label="Consumo y objetivos guardados"><h2>Consumido hoy</h2>
+      @if (!target()) { <p role="status">No hay objetivo guardado para esta persona y fecha. El consumo real sigue disponible; guarda la actividad diaria para ver comparaciones.</p> }
+      @else {
+        <p>Objetivo guardado: versión {{ target()!.version }} · {{ totals().provisional ? 'Estimación provisional' : target()!.calculation.result.expenditure.mode === 'manual-tdee' ? 'Gasto diario manual declarado' : 'Estimación diaria' }}.
+          El gasto no es una medición y no cambia al añadir alimentos.</p>
+        <div class="summary-grid"><p>Gasto {{ target()!.calculation.result.expenditure.mode === 'manual-tdee' ? 'manual' : 'estimado' }}: <strong>{{ totals().expenditure | number:'1.0-2' }} kcal</strong></p>
+          <p>Ajuste del objetivo: <strong>{{ totals().adjustment | number:'1.0-2' }} kcal</strong></p>
+          <p>Balance real frente al gasto: <strong>{{ totals().actual.kcal - totals().expenditure! | number:'1.0-2' }} kcal</strong> (positivo: superávit)</p></div>
+      }
+      <div class="rings">
+        @for (metric of [{key:'kcal', label:'Energía', unit:'kcal'}, {key:'protein',label:'Proteínas',unit:'g'}, {key:'carbohydrate',label:'Carbohidratos',unit:'g'}, {key:'fat',label:'Grasas',unit:'g'}]; track metric.key) {
+          <div class="diary-row">
+            @if (totals().target) { <app-progress-ring [label]="metric.label + ' (' + metric.unit + ')'"
+              [value]="$any(totals().actual)[metric.key]" [target]="$any(totals().target)[metric.key]" />
+              <p>{{ metric.label }}: <strong>{{ $any(totals().actual)[metric.key] | number:'1.0-2' }} / {{ $any(totals().target)[metric.key] | number:'1.0-2' }} {{ metric.unit }}</strong></p>
+              <p>{{ $any(totals().remaining)[metric.key] < 0 ? 'Exceso' : 'Restante' }}:
+                <strong>{{ ($any(totals().remaining)[metric.key] < 0 ? -$any(totals().remaining)[metric.key] : $any(totals().remaining)[metric.key]) | number:'1.0-2' }} {{ metric.unit }}</strong></p>
+            } @else { <p>{{ metric.label }} consumidas: <strong>{{ $any(totals().actual)[metric.key] | number:'1.0-2' }} {{ metric.unit }}</strong></p> }
+          </div>
+        }
+      </div><p class="muted">Las kcal provienen del valor publicado del alimento; las metas de macronutrientes usan 4/4/9 kcal por gramo. Las diferencias son normales.</p>
+    </section>
+    <section class="stack"><h2>Añadir alimento real</h2>
+      <div class="fields"><div class="field"><label for="diary-search">Buscar alimento USDA o personalizado</label>
+        <input id="diary-search" type="search" [value]="query()" (input)="query.set($any($event.target).value)" /></div>
+        <div class="field"><label for="diary-food">Elegir alimento y origen</label>
+          <select id="diary-food" [value]="chosen()?.foodId ?? ''" (change)="choose($any($event.target).value)">
+            <option value="">Seleccionar alimento</option>
+            @if (chosen() && !chosenInChoices()) {
+              <option [value]="chosen()!.foodId">{{ chosen()!.name }} · Valor guardado en el borrador</option>
+            }
+            @for (choice of choices(); track choice.kind + choice.id) { <option [value]="choice.id">{{ choice.name }} · {{ choice.kind === 'usda' ? 'USDA' : 'Personalizado' }}</option> }
+          </select></div></div>
+      @if (catalog.error()) { <p role="alert">{{ catalog.error() }} <button appButton variant="secondary" (click)="catalog.load()">Reintentar catálogo</button></p> }
+      @if (chosen()) { <p>Por 100 g: {{ chosen()!.per100g.kcal | number:'1.0-2' }} kcal · {{ chosen()!.per100g.protein | number:'1.0-2' }} g proteínas ·
+        {{ chosen()!.per100g.carbohydrate | number:'1.0-2' }} g carbohidratos · {{ chosen()!.per100g.fat | number:'1.0-2' }} g grasas</p> }
+      <div class="fields"><div class="field"><label for="diary-grams">Gramos consumidos</label>
+        <input id="diary-grams" type="number" min="0" step="any" [value]="grams() ?? ''" (input)="setGrams($any($event.target).value)" /></div>
+        <div class="field"><label for="diary-label">Grupo de comida real</label>
+          <input id="diary-label" maxlength="160" [value]="mealLabel()" (input)="setLabel($any($event.target).value)" /></div></div>
+      <button appButton [disabled]="busy() || !!editing() || !chosen()" (click)="add()">Registrar alimento consumido</button>
+      @if (draftStatus()) { <p role="status">{{ draftStatus() }}</p> }
+      <p class="muted">Las entradas y correcciones incompletas se conservan como borrador para esta persona y fecha. Termina o cancela una corrección antes de añadir otro alimento.</p>
+    </section>
+    <section class="stack"><h2>Marcar comida planificada como consumida</h2>
+      <p>Elige el plan, la semana y el día. Ajusta los gramos reales antes de marcar; el plan permanece igual.</p>
+      <div class="field"><label for="diary-meal">Comida del plan</label><select id="diary-meal" [value]="selectedMeal()" (change)="selectMeal($any($event.target).value)">
+        <option value="">Seleccionar comida planificada</option>
+        @for (option of options(); track option.key) { <option [value]="option.key">{{ option.plan.name }} · {{ option.week }} · {{ option.day }} · {{ option.meal.name }}</option> }
+      </select></div>
+      @if (selection(); as option) { <div class="diary-row stack"><p>Previsto: {{ planned(option) | number:'1.0-2' }} kcal · {{ option.meal.foods.length }} porciones.</p>
+        @for (food of option.meal.foods; track food.id; let index = $index) {
+          <div class="field"><label [for]="'plan-actual-' + food.id">Gramos reales de {{ food.food.name }} (previstos: {{ food.grams }} g)</label>
+            <input [id]="'plan-actual-' + food.id" type="number" min="0" step="any" [value]="plannedGrams()[index]"
+              (input)="plannedGrams.set(plannedGrams().map((value, i) => i === index ? +$any($event.target).value : value))" /></div>
+        }
+        <button appButton [disabled]="busy()" (click)="consume()">Marcar comida consumida</button>
+        @if (consumed(option)) { <p>Ya se registró o deshizo esta comida para esta fecha. Repetir no duplica el consumo.</p> }
+      </div> }
+      @if (!options().length) { <p>No hay comidas guardadas con alimentos para esta persona. Puedes añadir alimentos manualmente.</p> }
+    </section>
+    <section class="stack"><h2>Registros reales del día</h2>
+      @for (receipt of receipts(); track receipt.id) { <div class="diary-row"><p>Comida planificada: {{ receipt.state === 'consumed' ? 'Consumida' : 'Deshecha' }} · {{ receipt.foodLogIds.length }} porciones originales</p>
+        @if (receipt.state === 'consumed') { <button appButton variant="secondary" [disabled]="busy()" (click)="undo(receipt)">Deshacer comida consumida</button> }</div> }
+      @for (log of logs(); track log.id) { <div class="diary-row" data-testid="actual-food"><p><strong>{{ log.food.name }}</strong> · {{ log.mealLabel }} · {{ log.grams }} g · {{ amount(log) | number:'1.0-2' }} kcal
+        · {{ log.source ? 'Desde plan' : 'Entrada manual' }}</p>
+        @if (editing()?.id === log.id) { <div class="fields"><div class="field"><label [for]="'edit-grams-' + log.id">Gramos reales de {{ log.food.name }}</label>
+          <input [id]="'edit-grams-' + log.id" type="number" min="0" step="any" [value]="editGrams() ?? ''" (input)="changeEditGrams($any($event.target).value)" /></div>
+          <div class="field"><label [for]="'edit-label-' + log.id">Grupo real de {{ log.food.name }}</label>
+            <input [id]="'edit-label-' + log.id" [value]="editLabel()" (input)="changeEditLabel($any($event.target).value)" /></div></div>
+          <div class="actions"><button appButton [disabled]="busy()" (click)="saveEdit()">Guardar cambio real</button><button appButton variant="secondary" (click)="cancelEdit()">Cancelar edición</button></div>
+        } @else { <div class="actions"><button appButton variant="secondary" (click)="startEdit(log)">Editar registro real de {{ log.food.name }}</button>
+          <button appButton variant="secondary" [disabled]="busy()" (click)="remove(log)">Eliminar registro real de {{ log.food.name }}</button></div> }
+      </div> }
+      @if (!logs().length) { <p>No hay alimentos consumidos registrados para esta fecha.</p> }
+    </section>
+    <section><h2>Semana del {{ dates()[0] }} al {{ dates()[6] }}</h2><p>Resumen de lunes a domingo: consumo real y objetivos guardados. Un día sin objetivo aparece como «Sin objetivo».</p>
+      <div class="field"><label for="planned-week">Semana planificada como referencia opcional</label><select id="planned-week" [value]="plannedWeek()" (change)="plannedWeek.set($any($event.target).value)">
+        <option value="">Sin semana planificada</option>
+        @for (option of plannedWeeks(); track option.key) { <option [value]="option.key">{{ option.label }}</option> }
+      </select></div>
+      @if (plannedWeek()) { <p>Referencia por posición de día (lunes a domingo). El plan no está asignado a estas fechas y no cuenta como consumo.</p> }
+      <p class="muted">Desliza la tabla horizontalmente si necesitas ver todas las columnas.</p>
+      <div class="scroll-table" tabindex="0" role="region" aria-label="Comparación semanal desplazable"><table><thead><tr><th scope="col">Fecha</th><th scope="col">Consumido</th><th scope="col">Objetivo</th>
+        @if (plannedWeek()) { <th scope="col">Plan de referencia</th> }</tr></thead><tbody>
+        @for (row of weekly(); track row.day) { <tr><th scope="row">{{ row.day }}</th><td>{{ row.actual | number:'1.0-2' }} kcal</td>
+          <td>{{ row.target === null ? 'Sin objetivo' : (row.target | number:'1.0-2') + ' kcal' }}</td>
+          @if (plannedWeek()) { <td>{{ row.planned === null ? 'Sin día planificado' : (row.planned | number:'1.0-2') + ' kcal' }}</td> }
+        </tr> }
+      </tbody></table></div>
+    </section>
+  }
+</div>

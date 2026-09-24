@@ -1,0 +1,37 @@
+<app-card><div class="stack">
+  <h2>{{ foodId() ? 'Editar alimento personalizado' : 'Nuevo alimento personalizado' }}</h2>
+  <p>Datos aportados por la persona activa, sin verificación de USDA. Indica todos los valores por 100 g, también para líquidos.</p>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (loading()) {
+    @if (!error()) { <p role="status">Cargando borrador…</p> }
+    @else { <button appButton (click)="initialize()">Reintentar lectura del borrador</button> }
+    <button appButton variant="secondary" (click)="close()">Cerrar formulario</button>
+  } @else {
+    <form class="stack" [formGroup]="form" (ngSubmit)="save()">
+      <div class="field"><label for="custom-food-name">Nombre del alimento</label>
+        <input #nameInput id="custom-food-name" formControlName="name" maxlength="160" [attr.aria-invalid]="form.controls.name.touched && form.controls.name.invalid" aria-describedby="custom-name-help" />
+        <small id="custom-name-help">Obligatorio. Incluye la preparación si la conoces.
+          @if (form.controls.name.touched && form.controls.name.invalid) { Escribe un nombre válido. }</small></div>
+      <div class="grid">
+        <app-number-field id="custom-kcal" label="Energía (kcal por 100 g)" [control]="form.controls.kcal" [min]="0" step="any" hint="Obligatorio; cero es válido." />
+        <app-number-field id="custom-protein" label="Proteínas (g por 100 g)" [control]="form.controls.protein" [min]="0" step="any" hint="Obligatorio; cero es válido." />
+        <app-number-field id="custom-carbohydrate" label="Carbohidratos (g por 100 g)" [control]="form.controls.carbohydrate" [min]="0" step="any" hint="Obligatorio; cero es válido." />
+        <app-number-field id="custom-fat" label="Grasas (g por 100 g)" [control]="form.controls.fat" [min]="0" step="any" hint="Obligatorio; cero es válido." />
+      </div>
+      <div class="field"><label for="custom-food-note">Referencia de los valores</label>
+        <textarea id="custom-food-note" formControlName="note" maxlength="500" rows="2" aria-describedby="custom-note-help"></textarea>
+        <small id="custom-note-help">Opcional: etiqueta del producto, receta o nota de preparación.</small></div>
+      <p role="status">{{ draftStatus() }}</p>
+      @if (conflict()) {
+        <div class="notice"><h3>Compara antes de guardar</h3>
+          @if (currentFood(); as current) { <p>Versión guardada: {{ current.name }}. Energía: {{ current.per100g.kcal }} kcal; proteínas: {{ current.per100g.protein }} g; carbohidratos: {{ current.per100g.carbohydrate }} g; grasas: {{ current.per100g.fat }} g, por 100 g. Referencia: {{ current.source?.note || 'Sin referencia' }}.</p> }
+          <p>Tu borrador sigue en el formulario.</p><div class="actions">
+            <button appButton type="button" (click)="resolveConflict(true)">Conservar mi borrador</button>
+            <button appButton type="button" variant="secondary" (click)="resolveConflict(false)">Usar versión guardada</button>
+          </div></div>
+      }
+      <div class="actions"><button appButton type="submit" [disabled]="saving() || conflict()">{{ saving() ? 'Guardando…' : 'Guardar alimento' }}</button>
+        <button appButton type="button" variant="secondary" [disabled]="saving()" (click)="close()">Cerrar y conservar borrador</button></div>
+    </form>
+  }
+</div></app-card>

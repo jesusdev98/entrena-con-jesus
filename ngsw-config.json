@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "application",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": { "files": ["/*.html", "/*.css", "/*.js", "/*.ico", "/*.webmanifest", "/icons/**", "/resource-manifest.json"] }
+    },
+    {
+      "name": "offline-resources",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": { "files": ["/catalogs/**", "/exercises/**", "/fonts/**", "/licenses/**"] }
+    }
+  ]
+}

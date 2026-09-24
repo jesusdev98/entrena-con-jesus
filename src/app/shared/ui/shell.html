@@ -1,0 +1,32 @@
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<header class="topbar">
+  <a class="brand" routerLink="/" aria-label="Entrena con Jesús, inicio"><span class="brand-mark"><app-icon name="training" /></span><span>Entrena<small>con Jesús</small></span></a>
+  <div class="top-actions"><span class="connection">{{ offline.online() ? 'En este dispositivo' : 'Sin conexión' }}</span>
+    @if (workspace.settings()?.mode) { <a class="settings-link" routerLink="/settings" aria-label="Ajustes"><app-icon name="settings" /></a> }
+  </div>
+</header>
+@if (workspace.settings()?.mode) {
+  <nav class="navigation" aria-label="Navegación principal">
+    @for (link of links; track link.path) { <a [routerLink]="link.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: link.path === '/' }" ariaCurrentWhenActive="page"><app-icon [name]="link.icon" /><span>{{ link.label }}</span></a> }
+    @if (workspace.isTrainer()) { <a class="desktop-link" routerLink="/people" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icon name="people" /><span>Personas</span></a> }
+    <a class="desktop-link" routerLink="/settings" routerLinkActive="active" ariaCurrentWhenActive="page"><app-icon name="settings" /><span>Ajustes</span></a>
+    <div class="nav-footer">Una sesión a la vez.<br /><strong>Un poco más cerca de ti.</strong></div>
+  </nav>
+}
+<main id="main-content" tabindex="-1" [class.with-nav]="workspace.settings()?.mode">
+  @if (workspace.activePerson(); as person) { @if (workspace.settings()?.mode) {
+    <section class="context-bar" aria-label="Persona activa">
+      <div class="context-person"><span class="avatar">{{ person.displayName.slice(0, 1).toUpperCase() }}</span>
+        <div><span class="context-label">{{ workspace.isTrainer() ? 'Estás acompañando a' : 'Mi espacio personal' }}</span>
+          <strong data-testid="active-person-name">{{ person.displayName }}</strong><small>{{ person.reference || (person.kind === 'personal' ? 'Espacio personal' : 'Cliente') }} · {{ person.id.slice(0, 8) }}</small></div></div>
+      @if (workspace.isTrainer()) { <div class="context-controls"><label class="sr-only" for="active-person">Persona activa</label>
+        <select id="active-person" [ngModel]="person.id" [disabled]="workspace.busy()" (change)="select($event)">
+          @for (item of workspace.availablePeople(); track item.id) { <option [value]="item.id">{{ item.displayName }} · {{ item.reference || (item.kind === 'personal' ? 'Mi espacio' : 'Cliente') }} · {{ item.id.slice(0, 8) }}</option> }
+        </select><a routerLink="/people">Gestionar personas</a></div> }
+    </section>
+  } }
+  @if (updates.ready()) { <div class="notice update" role="status"><p>Hay una nueva versión. Guardaremos los borradores antes de recargar.</p><button appButton (click)="updates.apply()">Guardar y actualizar</button></div> }
+  @if (updates.error()) { <p class="error" role="alert">{{ updates.error() }}</p> }
+  <ng-content />
+  <footer class="page-footer">Entrena con Jesús <span>Hecho para avanzar, a tu ritmo.</span></footer>
+</main>
