@@ -2,6 +2,8 @@
 
 A Spanish-language, local-first Angular application for trainers and clients. **Available:** local profiles, mode switching, client management, durable drafts, offline food/exercise catalogs, person-scoped custom foods/exercises, multiweek routine and meal planning, actual workout and food logging, weekly history, daily activity/energy/macro targets and intake charts, reviewed manual plan/progress file exchange, full-device personal-data backups/restoration and local PDFs for saved routines, meal plans, dated intake and actual workouts.
 
+Public deployment: **https://entrena-con-jesus.vercel.app/**. Vercel serves the application; profiles, plans and progress stay in the browser's local storage. Export a full backup before clearing site data or changing devices.
+
 ## Run locally
 
 From the checked-out project directory, use Node 24.19.0 (see `.nvmrc`) and npm 11.17.x:
