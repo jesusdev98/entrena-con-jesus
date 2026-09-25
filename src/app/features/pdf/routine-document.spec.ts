@@ -27,6 +27,7 @@ describe('saved routine PDF document', () => {
     expect(text).toContain('Jesús'); expect(text).toContain('Semana azul'); expect(text).toContain('Día uno');
     expect(text).toContain('8–12 rep'); expect(text).toContain('20.5 kg'); expect(text).toContain('RIR objetivo 2');
     expect(text).toContain('PLAN PREVISTO'); expect(text).toContain('Direct source author'); expect(text).toContain('Collection foundation only');
+    expect(text).not.toContain(revision.id); expect(routinePdfFilename(revision)).not.toContain(revision.id);
     expect(text).toContain('Tracing of this frame only.'); expect(text).toContain('SVG bytes unchanged.');
     expect(frames.map(frame => frame.frame)).toEqual([3, 1]);
     expect(text).toContain('"unbreakable":true'); expect(text).toContain('"fillColor":"#111827"');

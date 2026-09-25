@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import type { LocalDate } from '../../core/domain/identity';
 import { DraftCoordinator } from '../../core/storage/draft-coordinator';
@@ -15,7 +14,7 @@ import { ActivityEditorStore } from './activity-editor.store';
 import { ActivityGroupEditor } from './activity-group-editor';
 import { TargetSummary } from './target-summary';
 
-@Component({ selector: 'app-activity-editor', providers: [ActivityEditorStore], imports: [FormsModule, JsonPipe, RouterLink, NumericValue, Button, Card, ActivityGroupEditor, TargetSummary],
+@Component({ selector: 'app-activity-editor', providers: [ActivityEditorStore], imports: [FormsModule, RouterLink, NumericValue, Button, Card, ActivityGroupEditor, TargetSummary],
   changeDetection: ChangeDetectionStrategy.OnPush, templateUrl: './activity-editor.html',
   styles: `:host { display: block; min-width: 0; } fieldset { border: 0; padding: 0; margin: 0; min-width: 0; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .75rem; } .identity, small { overflow-wrap: anywhere; } details { border-top: 1px solid var(--line); padding-top: 1rem; }` })
 export class ActivityEditor implements OnInit {
@@ -28,6 +27,29 @@ export class ActivityEditor implements OnInit {
   readonly trainingChoices = computed(() => this.eligible().filter(met => met.category !== 'work'));
   readonly walkingChoices = computed(() => this.eligible().filter(met => met.category === 'walking'));
   readonly groups = [{ key: 'work' as const, label: 'Trabajo' }, { key: 'training' as const, label: 'Entrenamiento' }];
+  comparison(value: ActivityDayValue | null | undefined): string[] {
+    if (!value) return ['No hay una versión guardada para comparar.'];
+    const rows = [`Método: ${value.mode === 'manual-tdee' ? 'Gasto diario manual' : 'Estimación con actividad'}`,
+      `Gasto manual: ${value.manualKcal ?? 'Sin indicar'} kcal · Motivo: ${value.manualReason || 'Sin indicar'}`,
+      `Pasos reales: ${value.totalSteps.actual ?? 'Sin indicar'} · previstos: ${value.totalSteps.forecast ?? 'Sin indicar'}`];
+    for (const [key, title] of [['work', 'Trabajo'], ['training', 'Entrenamiento']] as const) {
+      for (const source of ['actual', 'forecast'] as const) {
+        const group = value[key][source];
+        rows.push(`${title} ${source === 'actual' ? 'real' : 'previsto'}: ${group ? `${group.includedSteps ?? 'Sin indicar'} pasos incluidos · ${group.blocks.length} bloques` : 'Sin dato'}`);
+        group?.blocks.forEach((block, index) => {
+          const activityId = block.expenditure.mode === 'met' ? block.expenditure.activityId : '';
+          const met = this.store.draft()?.payload.context.catalog.entries.find(item => item.id === activityId);
+          const session = this.store.sessions().find(item => item.id === block.linkedTrainingSessionId);
+          rows.push(`${title} ${source === 'actual' ? 'real' : 'previsto'}, bloque ${index + 1}: ${block.minutes ?? 'Sin duración'} min · ${block.expenditure.mode === 'met' ? met?.label || 'Actividad del Compendio sin elegir' : `Gasto neto ${block.expenditure.netKcal ?? 'Sin indicar'} kcal · ${block.expenditure.reason || 'Sin fuente'}`}${block.linkedTrainingSessionId ? ` · Sesión ${session?.date ?? 'guardada'}: ${session?.labels.routine ?? 'Entrenamiento'}` : ''}`);
+        });
+      }
+    }
+    const walk = value.walking.actual ?? value.walking.forecast;
+    rows.push(`Caminata: ${walk ? walk.mode === 'cadence' ? `${walk.stepsPerMinute ?? 'Sin indicar'} pasos/min` : `${walk.minutes ?? 'Sin indicar'} min` : 'Sin dato'}`);
+    rows.push(`Objetivo: ${value.goal === 'loss' ? 'Déficit' : value.goal === 'gain' ? 'Superávit' : 'Mantenimiento'} · ajuste ${value.adjustmentKcal ?? 'Sin indicar'} kcal`);
+    rows.push(`Macronutrientes: proteínas ${value.macros.protein ?? 'Sin indicar'} %, carbohidratos ${value.macros.carbohydrate ?? 'Sin indicar'} %, grasas ${value.macros.fat ?? 'Sin indicar'} %`);
+    return rows;
+  }
   async ngOnInit(): Promise<void> { this.destroy.onDestroy(this.coordinator.register(() => this.store.flush())); await this.store.initialize(this.person().id, this.date()); }
   patch(patch: Partial<ActivityDayValue>): void { this.store.change({ ...this.store.draft()!.payload.value, ...patch }); }
   steps(source: 'forecast' | 'actual', value: number | null): void { this.patch({ totalSteps: { ...this.store.draft()!.payload.value.totalSteps, [source]: value } }); }

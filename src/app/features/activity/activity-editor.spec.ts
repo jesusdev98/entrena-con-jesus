@@ -83,6 +83,9 @@ describe('owner-bound daily activity editor', () => {
     await repository.saveDraft(owner, remote, durable); await repository.save(owner, remote);
     store.change({ ...store.draft()!.payload.value, adjustmentKcal: 321 }); expect(await store.flush()).toBe(false); fixture.detectChanges();
     expect(store.conflict()).toBe(true); expect(fixture.nativeElement.textContent).toContain('321'); expect(fixture.nativeElement.textContent).toContain('450');
+    const comparison = fixture.nativeElement.querySelector('[aria-label="Comparación de actividad"]').textContent as string;
+    expect(comparison).toContain('Mis datos locales'); expect(comparison).toContain('Datos guardados');
+    expect(comparison).not.toContain(durable.id); expect(comparison).not.toContain(owner);
     await store.save(); expect((await repository.get(owner, date))!.activity.adjustmentKcal).toBe(450);
     await store.recover(); expect(store.draft()!.payload.value.adjustmentKcal).toBe(450); expect(store.conflict()).toBe(false);
     store.change({ ...store.draft()!.payload.value, adjustmentKcal: 400 }); await store.save(); expect((await repository.get(owner, date))!.version).toBe(2);

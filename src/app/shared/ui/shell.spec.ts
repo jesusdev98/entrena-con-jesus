@@ -57,5 +57,11 @@ describe('trainer selector restoration', () => {
     expect(select.options[0].value).toBe(firstId);
     expect(select.value).toBe(selectedId);
     expect(select.selectedOptions[0].textContent).toContain('Evening');
+    expect([...select.options].map(option => option.textContent).filter(text => text?.startsWith('Alex')).sort()).toEqual([
+      'Alex · Cliente 1 · Morning', 'Alex · Cliente 2 · Evening',
+    ]);
+    expect(fixture.nativeElement.textContent).not.toContain(firstId);
+    expect(fixture.nativeElement.textContent).not.toContain(selectedId);
+    expect([...select.options].map(option => option.textContent).join(' ')).not.toMatch(/[0-9a-f]{8}-[0-9a-f-]{27,}/i);
   });
 });

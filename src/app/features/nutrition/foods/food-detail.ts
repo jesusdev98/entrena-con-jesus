@@ -14,8 +14,8 @@ import { preparationLabels, scaleFood, type FoodChoice } from './food.model';
         <p>{{ selected.entry.group }} · {{ preparations[selected.entry.preparation] }}</p>
         <p>Descripción original: <span lang="en">{{ selected.entry.source.originalDescription }}</span></p>
         <p>Grupo original: <span lang="en">{{ selected.entry.source.originalGroup }}</span></p>
-        <p>Versión: {{ selected.entry.source.version }}<br />Energía publicada: nutriente {{ selected.entry.source.energyNutrientId }} ({{ energyMethods[selected.entry.source.energyNutrientId] }}).</p>
-        <a [href]="'https://fdc.nal.usda.gov/food-details/' + selected.entry.source.fdcId + '/nutrients'" target="_blank" rel="noopener noreferrer">Consultar FDC {{ selected.entry.source.fdcId }} (requiere conexión; nueva pestaña)</a>
+         <p>Versión de la fuente: {{ selected.entry.source.version }}<br />Energía publicada: {{ energyMethods[selected.entry.source.energyNutrientId] }}.</p>
+         <a [href]="'https://fdc.nal.usda.gov/food-details/' + selected.entry.source.fdcId + '/nutrients'" target="_blank" rel="noopener noreferrer">Consultar ficha del alimento en USDA (requiere conexión; nueva pestaña)</a>
       </section>
     } @else {
       <section aria-label="Procedencia"><h3>Datos aportados por la persona</h3>

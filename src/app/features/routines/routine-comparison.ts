@@ -1,20 +1,22 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { JsonPipe } from '@angular/common';
 import type { PlannedSetDraft, RoutineContentDraft } from './routine.model';
 
-/** Full detached values remain inspectable, including prescriptions and frame credits. */
-@Component({ selector: 'app-routine-comparison', imports: [JsonPipe], changeDetection: ChangeDetectionStrategy.OnPush,
+/** Compare all editable prescriptions and human-readable saved media credits. */
+@Component({ selector: 'app-routine-comparison', changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<section><h3>{{ label() }} · {{ name() || 'Sin nombre' }}</h3>
     <p>Notas: {{ content().notes || 'Sin notas' }}</p>
     @for (week of content().weeks; track week.id) { <h4>{{ week.name }} · {{ week.days.length }} días</h4>
       @for (day of week.days; track day.id) { <p><strong>{{ day.name }}</strong></p>
-        @for (exercise of day.exercises; track exercise.id) { <p>{{ exercise.exercise.name }} · {{ exercise.notes || 'Sin notas' }}</p>
-          <ol>@for (set of exercise.sets; track set.id) { <li>{{ target(set) }} · Descanso: {{ set.restSeconds ?? 'Sin indicar' }} s · {{ set.notes || 'Sin notas' }}</li> }</ol>
+         @for (exercise of day.exercises; track exercise.id) { <p>{{ exercise.exercise.name }} · {{ exercise.notes || 'Sin notas' }} · {{ exercise.exercise.instruction || 'Sin instrucciones adicionales' }}</p>
+           <ol>@for (set of exercise.sets; track set.id) { <li>{{ target(set) }} · Descanso: {{ set.restSeconds ?? 'Sin indicar' }} s · {{ set.notes || 'Sin notas' }}</li> }</ol>
+           @if (exercise.exercise.media; as media) { <details><summary>Créditos de ilustraciones guardadas · {{ exercise.exercise.name }}</summary>
+             @if ('frames' in media) { @for (frame of media.frames; track frame.frame) { <p>{{ frame.label }} · {{ frame.attribution.creator }} · {{ frame.attribution.license }} · {{ frame.attribution.localChanges }}</p> } }
+             @else { <p>{{ media.credit.author }} · {{ media.credit.license }} · {{ media.credit.changes }}</p> }
+           </details> }
         }
       }
     }
-    <details><summary>Todos los valores y créditos</summary><pre>{{ content() | json }}</pre></details>
-  </section>`, styles: `:host { display: block; min-width: 0; } pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8rem; }` })
+  </section>`, styles: `:host { display: block; min-width: 0; } p { overflow-wrap: anywhere; }` })
 export class RoutineComparison {
   readonly label = input.required<string>(); readonly name = input.required<string>(); readonly content = input.required<RoutineContentDraft>();
   target(set: PlannedSetDraft): string {

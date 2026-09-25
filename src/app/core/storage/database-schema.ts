@@ -27,3 +27,5 @@ export interface AppDatabase extends DBSchema {
   externalSubjects: OwnedStore<ExternalSubjectMapping> & { indexes: { 'by-external': [UUID, UUID] } };
 }
 export type OwnedStoreName = Exclude<StoreNames<AppDatabase>, 'settings' | 'people'>;
+export const PERSONAL_STORES = ['profileRevisions', 'customExercises', 'customFoods', 'routineRevisions',
+  'mealPlanRevisions', 'trainingSessions', 'foodLogs', 'dailySnapshots', 'mealConsumptions', 'drafts', 'externalSubjects'] as const;

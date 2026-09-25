@@ -1,5 +1,5 @@
 <div class="stack">
-  <section class="notice"><h2>Diario de {{ name() }}</h2><p class="identity">ID de la persona: {{ personId() }}</p>
+  <section class="notice"><h2>Diario de {{ name() }}</h2>
     <div class="field"><label for="diary-date">Fecha del diario</label>
       <input id="diary-date" type="date" [value]="date()" (change)="changeDate($any($event.target).value)" /></div></section>
   @if (error()) { <div class="error" role="alert">{{ error() }} <button appButton variant="secondary" (click)="load()">Actualizar diario</button></div> }
@@ -9,11 +9,11 @@
   <div class="actions"><button appButton variant="secondary" [disabled]="loading() || busy() || pdf.busy() || !logs().length" (click)="exportPdf()">Descargar PDF del consumo real de {{ date() }}</button>
     @if (pdf.ready()?.owner === personId() && pdf.ready()?.selection === date()) { <button appButton variant="secondary" [disabled]="pdf.busy()" (click)="pdf.share(personId(), date())">Abrir o compartir último PDF nutricional</button> }
   </div>
-  @if (!loading() && !logs().length) { <p>No hay consumo real guardado para exportar en esta fecha.</p> }
+  @if (!loading() && !logs().length) { <p>No hay consumo real guardado para exportar en esta fecha. Registra un alimento abajo para crear el primer registro.</p> }
   @if (loading()) { <p role="status">Cargando diario…</p> }
   @if (!loading()) {
     <section class="stack" aria-label="Consumo y objetivos guardados"><h2>Consumido hoy</h2>
-      @if (!target()) { <p role="status">No hay objetivo guardado para esta persona y fecha. El consumo real sigue disponible; guarda la actividad diaria para ver comparaciones.</p> }
+      @if (!target()) { <div class="notice"><p role="status">No hay objetivo guardado para esta fecha. El consumo real sigue disponible; guarda la actividad diaria para ver comparaciones.</p><a appButton variant="secondary" routerLink="/activity">Guardar objetivo diario</a></div> }
       @else {
         <p>Objetivo guardado: versión {{ target()!.version }} · {{ totals().provisional ? 'Estimación provisional' : target()!.calculation.result.expenditure.mode === 'manual-tdee' ? 'Gasto diario manual declarado' : 'Estimación diaria' }}.
           El gasto no es una medición y no cambia al añadir alimentos.</p>
@@ -71,7 +71,7 @@
         <button appButton [disabled]="busy()" (click)="consume()">Marcar comida consumida</button>
         @if (consumed(option)) { <p>Ya se registró o deshizo esta comida para esta fecha. Repetir no duplica el consumo.</p> }
       </div> }
-      @if (!options().length) { <p>No hay comidas guardadas con alimentos para esta persona. Puedes añadir alimentos manualmente.</p> }
+      @if (!options().length) { <div class="notice"><p>No hay comidas planificadas disponibles. Puedes añadir alimentos reales arriba o crear un plan semanal.</p><a appButton variant="secondary" routerLink="/meal-plans">Crear plan semanal</a></div> }
     </section>
     <section class="stack"><h2>Registros reales del día</h2>
       @for (receipt of receipts(); track receipt.id) { <div class="diary-row"><p>Comida planificada: {{ receipt.state === 'consumed' ? 'Consumida' : 'Deshecha' }} · {{ receipt.foodLogIds.length }} porciones originales</p>
@@ -86,7 +86,7 @@
         } @else { <div class="actions"><button appButton variant="secondary" (click)="startEdit(log)">Editar registro real de {{ log.food.name }}</button>
           <button appButton variant="secondary" [disabled]="busy()" (click)="remove(log)">Eliminar registro real de {{ log.food.name }}</button></div> }
       </div> }
-      @if (!logs().length) { <p>No hay alimentos consumidos registrados para esta fecha.</p> }
+      @if (!logs().length) { <p>No hay alimentos consumidos registrados para esta fecha. Busca un alimento arriba o marca una comida planificada para empezar.</p> }
     </section>
     <section><h2>Semana del {{ dates()[0] }} al {{ dates()[6] }}</h2><p>Resumen de lunes a domingo: consumo real y objetivos guardados. Un día sin objetivo aparece como «Sin objetivo».</p>
       <div class="field"><label for="planned-week">Semana planificada como referencia opcional</label><select id="planned-week" [value]="plannedWeek()" (change)="plannedWeek.set($any($event.target).value)">

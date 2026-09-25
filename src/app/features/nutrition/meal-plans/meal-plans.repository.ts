@@ -40,11 +40,14 @@ export class MealPlansRepository {
   /** Full payload comparison protects even edits made within the same clock tick. */
   async saveDraft(owner: UUID, draft: MealPlanDraft, previous: MealPlanDraft | null): Promise<void> {
     if (draft.personId !== owner || draft.payload.kind !== 'meal-plan' || !draft.payload.planId || !draft.editorKey) throw new StorageFailure('invalid', 'El borrador pertenece a otra persona o está incompleto.');
-    const tx = (await this.db.open()).transaction(['settings', 'people', 'drafts'], 'readwrite');
+    const tx = (await this.db.open()).transaction(['settings', 'people', 'mealPlanRevisions', 'drafts'], 'readwrite');
     try {
       const settings = await tx.objectStore('settings').get('workspace');
       const person = await tx.objectStore('people').get(owner);
       if (!settings?.mode || settings.activePersonId !== owner || !person || person.archived || (settings.mode === 'client' && settings.personalPersonId !== owner)) throw new StorageFailure('invalid', 'La persona activa cambió. Vuelve a su espacio.');
+      const current = latestPlan(await tx.objectStore('mealPlanRevisions').index('by-person').getAll(owner), draft.payload.planId);
+      if (draft.payload.baseRevisionId !== null && !current ||
+        current && draft.payload.baseRevisionId === null) throw new StorageFailure('conflict', 'El plan ya no está disponible para editar. Guarda una copia si quieres conservar los cambios.');
       const stored = await tx.objectStore('drafts').index('by-editor').get([owner, draft.editorKey]);
       if (JSON.stringify(stored ?? null) !== JSON.stringify(previous)) throw new StorageFailure('conflict', 'El borrador cambió en otra pestaña. Compara antes de continuar.');
       if (stored && stored.id !== draft.id) throw new StorageFailure('conflict', 'El borrador cambió de identidad. Compara antes de continuar.');
@@ -61,6 +64,21 @@ export class MealPlansRepository {
   async setArchived(owner: UUID, current: MealPlanRevision, archived: boolean): Promise<MealPlanRevision> {
     if (current.personId !== owner) throw new StorageFailure('invalid', 'El plan pertenece a otra persona.');
     return this.append(owner, current.planId, current.id, { name: current.name, content: current.content, archived });
+  }
+  async deletePermanently(owner: UUID, expected: MealPlanRevision): Promise<void> {
+    if (expected.personId !== owner) throw new StorageFailure('invalid', 'El plan pertenece a otra persona.');
+    const tx = (await this.db.open()).transaction(['settings', 'people', 'mealPlanRevisions', 'drafts'], 'readwrite');
+    try {
+      const settings = await tx.objectStore('settings').get('workspace');
+      const person = await tx.objectStore('people').get(owner);
+      if (!settings?.mode || settings.activePersonId !== owner || !person || person.archived || (settings.mode === 'client' && settings.personalPersonId !== owner)) throw new StorageFailure('invalid', 'La persona activa cambió. Vuelve a su espacio.');
+      const revisions = (await tx.objectStore('mealPlanRevisions').index('by-person').getAll(owner)).filter(item => item.planId === expected.planId);
+      if (!revisions.length || latestPlan(revisions, expected.planId)?.id !== expected.id) throw new StorageFailure('conflict', 'El plan cambió o ya fue eliminado. Actualiza la lista antes de continuar.');
+      const drafts = (await tx.objectStore('drafts').index('by-person').getAll(owner)).filter(item => item.payload.kind === 'meal-plan' && item.payload.planId === expected.planId);
+      for (const revision of revisions) await tx.objectStore('mealPlanRevisions').delete([owner, revision.id]);
+      for (const draft of drafts) await tx.objectStore('drafts').delete([owner, draft.id]);
+      await tx.done;
+    } catch (error) { try { tx.abort(); } catch { /* Already aborted. */ } await tx.done.catch(() => undefined); throw storageFailure(error); }
   }
   private async append(owner: UUID, planId: UUID, base: UUID | null,
     value: Pick<MealPlanRevision, 'name' | 'content' | 'archived'>, draft?: MealPlanDraft): Promise<MealPlanRevision> {

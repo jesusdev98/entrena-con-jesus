@@ -15,6 +15,10 @@ npm start
 
 Open `http://localhost:4200`. Choose **Entrenador** or **Cliente**, enter your name and create your personal workspace. In Trainer mode, **Gestionar personas** creates and edits independent client profiles. The active selector always includes an identity suffix; full UUIDs appear in profiles. **Ajustes** switches modes without deleting people or history. Archiving clients is reversible.
 
+On a genuinely new, empty browser database, completing onboarding once also adds a published-catalog **Demo** routine, a seven-day meal plan, six previous weeks of example workouts and dated intake/activity. Trainer mode opens a separate **Usuario de prueba** client; Client mode keeps your entered profile and places examples in your personal workspace. Missing measurements produce explicitly manual example targets, never inferred measurements. This does not run on existing or restored data. Deleting example plans or records does not re-enable the seed; export a backup before clearing browser data.
+
+To start without examples, open **Ajustes → Eliminar datos demo** and confirm the irreversible cleanup. It removes only records identified in the seed receipt, including demo actual history; your personal profile and later unrelated data remain. Edited demo plans are explicitly warned about. Unfinished edits or newer records linked to demo actuals must be resolved first. This action never reseeds, including after restoring a backup of the cleared workspace. Older seeded workspaces without a record-level receipt do not offer the bulk cleanup: manage their entries individually rather than guessing which data to erase. Ordinary permanent plan deletion retains actual history by design.
+
 If using WSL, run these commands inside Linux with its Node/npm installation rather than Windows-mounted npm.
 
 ## Browse and customize foods
@@ -25,6 +29,8 @@ If using WSL, run these commands inside Linux with its Node/npm installation rat
 4. Edit through the food details. **Archivar alimento** is reversible through **Origen → Archivados de esta persona → Restaurar alimento**. Closing an unfinished form retains its draft; reopen the new-food button or the same food's editor to recover it.
 
 Custom foods and drafts belong to stable person IDs, including same-name clients. Mode/person changes flush pending drafts; failed writes stay visible and block draft-losing transitions. Concurrent food edits require a comparison choice. The bundled USDA catalog is shared and read-only. See [food catalog contracts](docs/food-catalog.md).
+
+The interface distinguishes people with the same name by role, stable ordinal and an optional reference instead of displaying storage IDs. Empty routine, meal, training, diary, progress and custom-catalog views suggest a next action. File exchange and full-backup reviews show human labels and explicitly mark file origins unverified; downloaded JSON still retains every identifier required for mapping, recovery and provenance.
 
 For offline use, first open **Ajustes** online and wait for **Recursos de esta entrega disponibles sin conexión.** The initial download includes the application's currently bundled resources. Chromium mobile/desktop tests verify first-ever catalog navigation and custom-food save/reload offline at root and subpath. External FDC citation pages still require a connection.
 
@@ -45,11 +51,15 @@ Open **Rutinas** for the selected person, then **Crear rutina / recuperar nueva*
 
 Saved routines support edit, duplicate, archive and restore. Revisions retain logical IDs and detached exercise/media credits; duplicates get new instance IDs. Cross-tab changes require explicit comparison, and person/mode changes flush owner-bound drafts. Prepare resources in **Ajustes** for offline create/edit/reload. See [routine planning contracts and recovery](docs/routine-planning.md).
 
+**Eliminar definitivamente [rutina]** opens an irreversible confirmation. Unlike archive, it removes every revision and matching routine editor draft for that person's plan; the routine disappears from both active and archived lists, including after reload. Completed workouts, their frozen targets and progress history remain available for correction and actual-history PDFs. An archived or deleted plan cannot produce a plan PDF.
+
 **Descargar PDF de [rutina]** on a saved routine exports that person's selected saved revision as a read-only A4 illustrated handout. It labels all sets as planned, preserves ordered pose references and per-frame credits, and shows a truthful placeholder for custom exercises without images. Use **Abrir o compartir último PDF** if your browser supports sharing/opening it. Wait for the complete offline readiness message in **Ajustes** before downloading offline. See [PDF use, credits and recovery](docs/pdf-exports.md).
 
 ## Plan weekly meals
 
 Select a person and open **Planes de comidas** from **Inicio** or the food catalog. Name the plan, organize weeks and days, rename/add breakfast, lunch, dinner or snack groups, then search USDA and person-custom foods by preparation and enter grams. Preview totals scale each food's captured published kcal and macros per 100 g. Every level supports duplication, removal and keyboard move buttons. Incomplete plans remain drafts; saved plans support editing, independent duplication, archive and restore. Cross-tab conflicts require an explicit recovery choice. Prepare offline resources in **Ajustes** before editing offline. **Planning never records consumption** until a meal is marked in **Diario alimentario**. See [meal-plan contracts](docs/meal-plans.md).
+
+**Eliminar definitivamente [plan]** requires separate irreversible confirmation. It removes the plan's revisions and editor drafts from active and archived lists, while dated food logs and consumption receipts remain in the diary with their original source IDs. Existing consumption can still be undone; archived or deleted plans cannot produce a plan PDF. Actual diary PDFs remain available.
 
 ## Record actual food and compare targets
 
@@ -64,6 +74,8 @@ Four labeled rings show actual calories/protein/carbohydrates/fat against that d
 3. Mark unperformed sets **No realizada** to finish a partial workout without inventing zero values. Incomplete sessions autosave as owner-bound drafts; **Volver conservando borrador** and **Continuar** recover them after navigation or reload. Optional total session minutes are entered manually, including rests.
 4. **Finalizar y guardar sesión** commits the session and removes its draft atomically. **Progreso** shows Monday–Sunday weeks, an independent comparison week, exercise and optional exact-date filters, and planned/actual values in readable text. Drafts do not enter history; skipped sets do not count as completed performance.
 5. **Corregir sesión** reopens actual values for intentional correction. **Guardar corrección intencional** retains the session identity and original prescription. Cross-tab conflicts show local/durable values and require explicit recovery before saving. Later routine or catalog edits do not rewrite history.
+
+**Progreso real** charts the last six completed Monday–Sunday weeks of finished sessions, external load volume (completed weighted kg × reps) and the selected exercise's maximum recorded kg per week. Its recent-day charts compare logged food kcal and protein/carbohydrate/fat against saved daily targets, plus actual saved steps and daily expenditure labeled manual or estimated. Missing logs, targets and steps remain gaps; explicit zero is shown as zero. Open **Ver datos** under any chart for a keyboard-accessible date table with units. These charts do not infer adherence, a step goal, bodyweight history or estimated 1RM. After clearing demo data, they show links to start recording instead of invented values. The weekly history filters, comparison, PDFs and diary's four daily rings remain available.
 
 Prepare resources in **Ajustes** before going offline. Training uses the existing local database and cached UI/media; it does not estimate calories or write activity records. See [training and history contracts](docs/training-history.md).
 

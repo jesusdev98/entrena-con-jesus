@@ -48,7 +48,7 @@
         @if (error() && !conflict()) { <button appButton variant="secondary" type="button" (click)="flush()">Reintentar borrador</button> }
       </div>
       <small role="status">{{ draftStatus() }}</small>
-      <p class="identity">ID del perfil: {{ identity() }}</p>
+      <p class="muted">Este perfil conserva sus datos aunque otra persona tenga el mismo nombre.</p>
     </form>
   }
 </app-card>

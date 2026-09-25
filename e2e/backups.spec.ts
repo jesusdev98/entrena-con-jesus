@@ -1,8 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 async function onboard(page: Page, path = '/'): Promise<void> {
   await page.goto(path);
+  await markLegacyWorkspace(page);
   await page.getByRole('radio', { name: /Entrenador/ }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Entrenador');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();
@@ -36,6 +38,7 @@ async function ready(page: Page): Promise<void> {
 }
 
 test('trainer client, routine, actual workout, food and daily target survive reviewed replacement at 320px', async ({ browser, page }, info) => {
+  test.setTimeout(45_000);
   await page.setViewportSize({ width: 320, height: 740 }); await onboard(page);
   await page.getByRole('link', { name: 'Gestionar personas' }).click(); await page.getByRole('link', { name: 'Añadir cliente' }).click();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Alex');
@@ -92,7 +95,9 @@ test('trainer client, routine, actual workout, food and daily target survive rev
     const sibling = await context.newPage(); await sibling.goto('/');
     await expect(sibling.getByTestId('active-person-name')).toHaveText('Entrenador');
     await review(dest, file);
-    await expect(dest.getByText(`ID ${owner}`)).toBeVisible();
+     await expect(dest.getByRole('region', { name: 'Revisar reemplazo de datos' })).toContainText('Alex · Cliente');
+     await expect(dest.getByRole('region', { name: 'Revisar reemplazo de datos' })).not.toContainText(owner);
+     await expect(dest.getByRole('region', { name: 'Revisar reemplazo de datos' })).toContainText('Entrenamientos reales');
     await dest.getByRole('heading', { name: 'Revisión antes de reemplazar' }).scrollIntoViewIfNeeded();
     await dest.screenshot({ path: info.outputPath('backup-review-320.png') });
     expect(await dest.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

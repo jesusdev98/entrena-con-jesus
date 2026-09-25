@@ -1,8 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 async function savedRoutine(page: Page, path: string): Promise<void> {
-  await page.goto(path); await page.getByRole('radio', { name: /Entrenador/ }).check();
+  await page.goto(path); await markLegacyWorkspace(page); await page.getByRole('radio', { name: /Entrenador/ }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Jesús');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();
   await expect(page.getByTestId('active-person-name')).toHaveText('Jesús');

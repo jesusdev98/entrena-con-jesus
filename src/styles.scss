@@ -25,6 +25,10 @@ small, .muted { color: var(--muted); }
 .app-button.secondary { background: var(--surface); color: var(--ink); border-color: var(--line); }
 .app-button.secondary:hover { background: var(--blue-soft); }
 .app-button.danger { background: var(--danger); }
+.app-button.danger:hover { background: #8b1028; }
+.delete-dialog { width: min(32rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); overflow: auto; border: 2px solid var(--danger); border-radius: 1rem; padding: 1.25rem; background: var(--surface); color: var(--ink); box-shadow: 0 1rem 3rem #0006; }
+.delete-dialog::backdrop { background: #111b32b8; }
+.delete-dialog .actions { justify-content: flex-end; }
 .field { display: grid; gap: .4rem; min-width: 0; }
 label, legend { font-weight: 650; font-size: .9rem; }
 input:not([type=radio]), select, textarea { width: 100%; min-width: 0; min-height: 48px; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); color: var(--ink); }

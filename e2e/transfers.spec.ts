@@ -1,8 +1,10 @@
 import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 async function onboard(page: Page, mode: 'Entrenador' | 'Cliente', path = '/'): Promise<void> {
   await page.goto(path);
+  await markLegacyWorkspace(page);
   await page.getByRole('radio', { name: new RegExp(mode) }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill(mode === 'Entrenador' ? 'Entrenador' : 'Cliente');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();
@@ -79,10 +81,11 @@ test('trainer and client review a selected plan across isolated contexts at 320p
     const returnFile = await exportFile(client.page, 'Comidas · Plan ajustado');
     await open(page);
     await page.getByLabel('Archivo JSON recibido').setInputFiles({ name: 'return.json', mimeType: 'application/json', buffer: returnFile });
-    await expect(page.getByText('Plan.name', { exact: true })).toBeVisible();
-    await expect(page.getByText(/Destino elegido: Alex · Cliente A/)).toBeVisible();
-    await expect(page.getByText(/Versión recibida/)).toBeVisible();
-    await page.getByText('Plan.name', { exact: true }).scrollIntoViewIfNeeded();
+    await expect(page.getByText('Plan · Nombre', { exact: true })).toBeVisible();
+    await expect(page.getByText('Destino elegido:')).toContainText('Alex · Cliente 1 · Cliente A');
+    await expect(page.getByText(/Plan recibido:/)).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Revisión antes de importar' })).not.toContainText(first);
+    await page.getByText('Plan · Nombre', { exact: true }).scrollIntoViewIfNeeded();
     await page.screenshot({ path: testInfo.outputPath('plan-review-320.png') });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.getByRole('radio', { name: 'Conservar original local' }).check();
@@ -221,6 +224,9 @@ test('selected trainer plan → client actual training and diary → trainer rev
     expect(JSON.parse(original.toString()).payload.foodLogs).toHaveLength(1);
     await progressReview(page, original);
     await expect(page.getByTestId('progress-record')).toHaveCount(2);
+    const progressPayload = JSON.parse(original.toString());
+    await expect(page.getByRole('region', { name: 'Revisión de progreso antes de importar' })).not.toContainText(progressPayload.payload.sessions[0].id);
+    expect(progressPayload.payload.sessions[0].id).toMatch(/[0-9a-f]{8}-[0-9a-f-]{27,}/i);
     await page.getByTestId('progress-record').first().locator('summary').click();
     await page.screenshot({ path: info.outputPath('progress-review-320.png') });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -235,7 +241,7 @@ test('selected trainer plan → client actual training and diary → trainer rev
     await page.locator('a[href*="diary"]').first().click();
     await page.getByLabel('Fecha del diario').fill('2026-01-01');
     await expect(page.getByTestId('actual-food')).toHaveCount(1);
-    await expect(page.getByText('No hay objetivo guardado para esta persona y fecha.', { exact: false })).toBeVisible();
+     await expect(page.getByText('No hay objetivo guardado para esta fecha.', { exact: false })).toBeVisible();
     await client.page.getByRole('navigation').getByRole('link', { name: 'Progreso', exact: true }).click();
     await client.page.getByLabel('Fecha de la semana', { exact: true }).fill('2026-01-01');
     await client.page.getByRole('region', { name: 'Semana seleccionada' }).getByRole('link', { name: /^Corregir sesión/ }).click();

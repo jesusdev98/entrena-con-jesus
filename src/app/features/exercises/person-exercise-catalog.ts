@@ -18,7 +18,7 @@ import { catalogChoice, customChoice, type ExerciseChoice } from './exercise-cat
 @Component({ selector: 'app-person-exercise-catalog', imports: [ReactiveFormsModule, Button, ExercisePicker, CustomExerciseEditor],
   changeDetection: ChangeDetectionStrategy.OnPush, template: `<div class="stack">
     <section class="notice" aria-label="Persona del catálogo"><h2>Ejercicios personalizados de {{ person().displayName }}</h2>
-      <p>{{ person().reference || 'Espacio local' }}</p><p class="identity">ID de la persona: {{ person().id }}</p>
+       <p>{{ person().reference || 'Espacio local' }}</p>
       <button #newButton appButton [disabled]="editor() !== null || loading() || busy()" (click)="editor.set('new')">Añadir ejercicio personalizado</button>
       <p class="muted">Este botón también recupera el borrador de un ejercicio nuevo.</p></section>
     @if (message()) { <p role="status">{{ message() }}</p> }
@@ -34,8 +34,9 @@ import { catalogChoice, customChoice, type ExerciseChoice } from './exercise-cat
       </select></div>
       @if (catalog.status() === 'loading' || catalog.status() === 'idle') { <p role="status">Cargando catálogo local de ejercicios…</p> }
       @if (catalog.error()) { <div class="error" role="alert"><p>{{ catalog.error() }}</p><button appButton variant="secondary" (click)="catalog.load()">Reintentar catálogo de ejercicios</button></div> }
-      @if (canBrowse()) {
-        @for (source of [origin()]; track source) { <app-exercise-picker [exercises]="choices()" [includeArchived]="source === 'archived'" (selected)="showDetail($event)" /> }
+       @if (canBrowse()) {
+         @if ((origin() === 'custom' || origin() === 'archived') && !choices().length) { <p class="notice">{{ origin() === 'archived' ? 'No hay ejercicios personalizados archivados. Cambia el origen para explorar el catálogo.' : 'Todavía no hay ejercicios personalizados. Usa «Añadir ejercicio personalizado» para crear el primero.' }}</p> }
+         @for (source of [origin()]; track source) { <app-exercise-picker [exercises]="choices()" [includeArchived]="source === 'archived'" (selected)="showDetail($event)" /> }
       }
     }
   </div>`, styles: `:host { display: block; min-width: 0; } .notice p:last-child { margin: .75rem 0 0; } select { max-width: 100%; }` })

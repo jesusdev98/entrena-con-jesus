@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Database, StorageFailure, storageFailure } from '../../core/storage/database';
 import { newId, type UUID } from '../../core/domain/identity';
+import { PERSONAL_STORES } from '../../core/storage/database-schema';
 import { emptyProfile, type AppMode, type AppSettings, type Person, type PersonFormValue } from './person.model';
 
 export interface WorkspaceSnapshot { settings: AppSettings; people: Person[] }
@@ -10,13 +11,22 @@ export class PeopleRepository {
   private readonly database = inject(Database);
 
   async load(): Promise<WorkspaceSnapshot> {
-    const tx = (await this.database.open()).transaction(['settings', 'people'], 'readwrite');
+    const db = await this.database.open();
+    const current = db.transaction(['settings', 'people'], 'readonly');
+    const existing = await current.objectStore('settings').get('workspace');
+    const existingPeople = existing ? await current.objectStore('people').getAll() : null;
+    await current.done;
+    if (existing && existingPeople) return { settings: existing, people: existingPeople };
+    const tx = db.transaction(['settings', 'people', ...PERSONAL_STORES], 'readwrite');
     try {
       let settings = await tx.objectStore('settings').get('workspace');
       if (!settings) {
+        const empty = (await tx.objectStore('people').count()) === 0 &&
+          (await Promise.all(PERSONAL_STORES.map(store => tx.objectStore(store).count()))).every(count => count === 0);
         const id = newId();
         const now = new Date().toISOString();
-        settings = { id: 'workspace', workspaceId: newId(), mode: null, personalPersonId: id, activePersonId: id, lastTrainerPersonId: id };
+        settings = { id: 'workspace', workspaceId: newId(), mode: null, personalPersonId: id, activePersonId: id, lastTrainerPersonId: id,
+          ...(empty ? { demoSeed: { version: 1 as const, status: 'eligible' as const } } : {}) };
         await tx.objectStore('people').add({ id, kind: 'personal', displayName: 'Mi espacio', reference: '', archived: false, profile: emptyProfile(), createdAt: now, updatedAt: now });
         await tx.objectStore('settings').add(settings);
       }
@@ -33,6 +43,7 @@ export class PeopleRepository {
       if (!settings) throw new StorageFailure('invalid', 'Primero crea tu espacio.');
       const previous = await tx.objectStore('people').get(settings.lastTrainerPersonId);
       settings.mode = mode;
+      if (settings.demoSeed?.status === 'eligible') settings.demoSeed = { version: 1, status: 'ineligible' };
       settings.activePersonId = mode === 'trainer' && previous && !previous.archived ? previous.id : settings.personalPersonId;
       await tx.objectStore('settings').put(settings);
       await tx.done;
@@ -57,6 +68,10 @@ export class PeopleRepository {
   async savePerson(id: UUID, input: PersonFormValue, baseUpdatedAt: string | null, draft?: { personId: UUID; id: UUID }, onboardingMode?: AppMode): Promise<void> {
     const { validatePerson } = await import('./person.validation');
     const value = validatePerson(input);
+    if (onboardingMode) {
+      const { finishOnboarding } = await import('../demo/demo-seed');
+      return finishOnboarding(this.database, id, value, baseUpdatedAt, draft, onboardingMode);
+    }
     const tx = (await this.database.open()).transaction(['settings', 'people', 'profileRevisions', 'drafts'], 'readwrite');
     try {
       const settings = await tx.objectStore('settings').get('workspace');

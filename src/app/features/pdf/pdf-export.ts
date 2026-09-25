@@ -73,7 +73,7 @@ function replaceRaster(node: unknown): void {
 
 export function routinePdfFilename(revision: RoutineRevision): string {
   const slug = revision.name.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 55) || 'rutina';
-  return `entrena-con-jesus-${slug}-${revision.id.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 36)}.pdf`;
+  return `entrena-con-jesus-${slug}-${revision.updatedAt.slice(0, 10)}.pdf`;
 }
 
 export function downloadPdf(blob: Blob, filename: string): void {

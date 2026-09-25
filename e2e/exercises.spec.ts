@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 test('exercise first visit offline, search, filters, ordered credits, keyboard dialog and 320px', async ({ page, context }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto('/entrena/');
+  await markLegacyWorkspace(page);
   await page.getByRole('radio', { name: /Entrenador/ }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Jesús');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();

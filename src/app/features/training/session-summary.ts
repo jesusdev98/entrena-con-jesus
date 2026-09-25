@@ -13,8 +13,8 @@ import type { TrainingSession } from './training.model';
         </table>
       </section>
     } }
-    <details><summary>Referencia estable y tiempos</summary><p class="identity">Sesión: {{ value().id }} · Versión: {{ value().version }}</p>
-      <p class="identity">Revisión de rutina: {{ value().source?.revisionId }}</p><p>Inicio del registro: {{ value().startedAt }} · Finalización: {{ value().completedAt ?? 'Pendiente' }}</p>
+    <details><summary>Detalles del registro</summary><p>Corrección guardada: versión {{ value().version }} · {{ value().source ? 'Desde una rutina planificada' : 'Sesión sin rutina de origen' }}</p>
+      <p>Inicio del registro: {{ value().startedAt }} · Finalización: {{ value().completedAt ?? 'Pendiente' }}</p>
       <p>La duración se indica manualmente; no es una estimación de calorías.</p></details>
   </article>`, styles: `:host { display: block; min-width: 0; } table { width: 100%; border-collapse: collapse; table-layout: fixed; } caption { text-align: left; margin-bottom: .5rem; } th, td { text-align: left; vertical-align: top; overflow-wrap: anywhere; padding: .5rem .25rem; border-bottom: 1px solid var(--line); } th:first-child { width: 3.5rem; }` })
 export class SessionSummary {

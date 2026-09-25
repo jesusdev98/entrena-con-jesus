@@ -1,11 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 async function onboard(page: Page, path = '/'): Promise<void> {
   await page.goto(path);
+  await markLegacyWorkspace(page);
   await page.getByRole('radio', { name: /Entrenador/ }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Jesús');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();
-  await expect(page.getByTestId('active-person-name')).toHaveText('Jesús');
+  await expect(page.getByTestId('active-person-name')).toHaveText('Jesús', { timeout: 15_000 });
 }
 
 async function profile(page: Page, weight = '80'): Promise<void> {

@@ -14,8 +14,13 @@ export const BACKUP_STORES = ['settings', 'people', 'profileRevisions', 'customE
 export const MAX_BACKUP_BYTES = 20 * 1024 * 1024;
 const owned = { id: uuid, personId: uuid, createdAt: instant, updatedAt: instant };
 const json = z.unknown();
+const demoIdentity = z.strictObject({ id: uuid, createdAt: instant });
+const demoReceipt = z.strictObject({ personId: uuid, trainerPersonId: uuid.nullable(), trainerPersonCreatedAt: instant.nullable(), profileRevision: demoIdentity,
+  routine: z.strictObject({ planId: uuid, revision: demoIdentity }), mealPlan: z.strictObject({ planId: uuid, revision: demoIdentity }),
+  sessions: z.array(demoIdentity).length(21), foodLogs: z.array(demoIdentity).length(96), snapshots: z.array(demoIdentity).length(12) });
 const settings = z.strictObject({ id: z.literal('workspace'), workspaceId: uuid, mode: z.enum(['trainer', 'client']).nullable(),
-  personalPersonId: uuid, activePersonId: uuid, lastTrainerPersonId: uuid });
+  personalPersonId: uuid, activePersonId: uuid, lastTrainerPersonId: uuid,
+  demoSeed: z.strictObject({ version: z.literal(1), status: z.enum(['eligible', 'seeded', 'ineligible', 'cleared']), receipt: demoReceipt.optional() }).optional() });
 const person = z.strictObject({ id: uuid, kind: z.enum(['personal', 'client']), displayName: z.string().min(1).max(160),
   reference: z.string().max(160), archived: z.boolean(), profile: json, createdAt: instant, updatedAt: instant });
 const revision = { ...owned, planId: uuid, parentRevisionId: uuid.nullable(), name: z.string().min(1).max(160),
@@ -128,7 +133,7 @@ function inspectTree(value: unknown): void {
       if (item.key === 'path' && !/^exercises\/[a-z0-9-]+-[123]\.svg$/.test(text)) invalid(item.key);
       if (item.key === 'date') date(text);
       if ((item.key === 'id' || item.key.endsWith('Id')) && !['activityId', 'foodId', 'exerciseId', 'fdcId'].includes(item.key) &&
-        text !== 'workspace' && !(item.key === 'id' && /^(adult:\d{5}|older-adult:\d{5}60)$/.test(text)) && !z.uuid().safeParse(text).success) invalid(item.key);
+        text !== 'workspace' && !(item.key === 'id' && (/^(adult:\d{5}|older-adult:\d{5}60)$/.test(text) || text === 'residual-walking')) && !z.uuid().safeParse(text).success) invalid(item.key);
       if ((item.key.endsWith('At') || item.key === 'startedAt' || item.key === 'completedAt') &&
         !Number.isFinite(Date.parse(text))) invalid(item.key);
     }
@@ -150,6 +155,27 @@ export function validateBackup(payload: BackupPayload): void {
   if (payload.people.filter(p => p.kind === 'personal').length !== 1 ||
     people.get(s.personalPersonId)?.kind !== 'personal' || !people.has(s.activePersonId) || !people.has(s.lastTrainerPersonId) ||
     (s.mode !== 'trainer' && s.activePersonId !== s.personalPersonId) || people.get(s.activePersonId)?.archived) invalid();
+  const receipt = s.demoSeed?.receipt;
+  if (receipt) {
+    if (!['seeded', 'cleared'].includes(s.demoSeed!.status) ||
+      (receipt.trainerPersonId === null ? receipt.personId !== s.personalPersonId || receipt.trainerPersonCreatedAt !== null
+        : receipt.trainerPersonId !== receipt.personId || receipt.trainerPersonCreatedAt === null)) invalid('demoSeed.receipt');
+    const ids = [receipt.profileRevision, receipt.routine.revision, receipt.mealPlan.revision,
+      ...receipt.sessions, ...receipt.foodLogs, ...receipt.snapshots].map(item => item.id);
+    if (new Set(ids).size !== ids.length) invalid('demoSeed.receipt');
+    const matches = (store: 'profileRevisions' | 'trainingSessions' | 'foodLogs' | 'dailySnapshots', entries: { id: string; createdAt: string }[]) => {
+      for (const entry of entries) {
+        const stored = payload[store].find(item => item.id === entry.id && item.personId === receipt.personId);
+        if (stored && stored.createdAt !== entry.createdAt) invalid('demoSeed.receipt');
+      }
+    };
+    matches('profileRevisions', [receipt.profileRevision]); matches('trainingSessions', receipt.sessions);
+    matches('foodLogs', receipt.foodLogs); matches('dailySnapshots', receipt.snapshots);
+    for (const [store, plan] of [['routineRevisions', receipt.routine], ['mealPlanRevisions', receipt.mealPlan]] as const) {
+      const stored = payload[store].find(item => item.id === plan.revision.id && item.personId === receipt.personId);
+      if (stored && (stored.createdAt !== plan.revision.createdAt || stored.planId !== plan.planId)) invalid('demoSeed.receipt');
+    }
+  }
   const keys = new Map<string, Set<string>>();
   for (const store of BACKUP_STORES.filter(name => name !== 'settings' && name !== 'people')) {
     const seen = new Set<string>(); keys.set(store, seen);

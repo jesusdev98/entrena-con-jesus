@@ -12,7 +12,7 @@ import { WorkspaceStore } from '../people/workspace.store';
     <div class="hero-art" aria-hidden="true"><span class="orbit one"></span><span class="orbit two"></span><span class="art-mark"><app-icon name="training" /></span><span class="art-note">A TU RITMO</span></div></section>
     <div class="grid"><app-card><span class="badge"><app-icon name="check" /> Tu base está lista</span><h2>Un perfil que te acompaña</h2>
       <p class="muted">{{ workspace.activePerson()?.displayName }} tiene un espacio independiente. El nombre puede repetirse; la identidad, no.</p>
-      <p class="identity">ID: {{ workspace.activePerson()?.id }}</p></app-card>
+       <p class="muted">{{ workspace.activePerson()?.reference || (workspace.activePerson()?.kind === 'personal' ? 'Mi espacio personal' : 'Cliente') }}</p></app-card>
     <app-card><span class="badge"><app-icon name="shield" /> Almacenamiento local</span><h2>Tus datos, en este dispositivo</h2>
       <p class="muted">Los perfiles y borradores se guardan en tu navegador. No se envían a un servidor.</p><a routerLink="/settings">Ver ajustes del espacio →</a></app-card></div>
     <section><p class="eyebrow">Tu espacio</p><h2>Todo conectado con tu progreso.</h2><p class="muted">Planifica rutinas y comidas, registra entrenamientos y consumo real, y compara tu historial.</p>

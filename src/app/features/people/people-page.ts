@@ -7,6 +7,7 @@ import { Button } from '../../shared/ui/button';
 import { ConfirmDialog } from '../../shared/ui/confirm-dialog';
 import { WorkspaceStore } from './workspace.store';
 import type { Person } from './person.model';
+import { personDescription } from './person-label';
 
 @Component({ selector: 'app-people-page', imports: [Card, Button, RouterLink], changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<div class="stack"><header><p class="eyebrow">Acompañamiento personal</p><h1>Tus personas, su espacio.</h1>
@@ -16,7 +17,7 @@ import type { Person } from './person.model';
     <div class="grid">@for (person of workspace.people(); track person.id) {
       <app-card><div class="stack"><div><span class="badge">{{ person.archived ? 'Archivado' : person.kind === 'personal' ? 'Mi espacio personal' : 'Cliente' }}</span>
         <h2>{{ person.displayName }}</h2><p class="muted">{{ person.reference || 'Sin referencia adicional' }}</p>
-        <p class="identity">ID: {{ person.id }}</p></div>
+         <p class="muted">{{ description(person, workspace.people()) }}</p></div>
         @if (!person.archived) {
           <div class="actions"><button appButton [disabled]="workspace.busy()" (click)="select(person)">{{ workspace.activePerson()?.id === person.id ? 'Abrir espacio activo' : 'Seleccionar' }}</button>
             <a appButton variant="secondary" [routerLink]="['/people', person.id]">Editar perfil</a></div>
@@ -26,6 +27,7 @@ import type { Person } from './person.model';
     }</div></div>`, styles: `h2 { margin: .8rem 0 .4rem; overflow-wrap: anywhere; } .text-button { background: none; border: 0; color: var(--muted); text-decoration: underline; text-underline-offset: .2rem; justify-self: start; min-height: 44px; }` })
 export class PeoplePage {
   protected readonly workspace = inject(WorkspaceStore);
+  protected readonly description = personDescription;
   private readonly router = inject(Router);
   private readonly dialog = inject(Dialog);
   protected async select(person: Person): Promise<void> { if (await this.workspace.selectPerson(person.id)) await this.router.navigateByUrl('/'); }

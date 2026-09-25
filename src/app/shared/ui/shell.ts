@@ -7,6 +7,7 @@ import { OfflineStatus } from '../../core/pwa/offline-status';
 import { AppUpdates } from '../../core/pwa/app-updates';
 import { Button } from './button';
 import type { UUID } from '../../core/domain/identity';
+import { personDescription, personLabel } from '../../features/people/person-label';
 
 @Component({ selector: 'app-shell', imports: [RouterLink, RouterLinkActive, FormsModule, Icon, Button], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.html', styleUrl: './shell.scss' })
@@ -19,6 +20,8 @@ export class Shell {
     { path: '/', label: 'Inicio', icon: 'home' }, { path: '/routines', label: 'Rutinas', icon: 'training' },
     { path: '/nutrition', label: 'Alimentación', icon: 'food' }, { path: '/progress', label: 'Progreso', icon: 'progress' },
   ];
+  protected readonly personDescription = personDescription;
+  protected readonly personLabel = personLabel;
   protected async select(event: Event): Promise<void> {
     const select = event.target as HTMLSelectElement;
     if (await this.workspace.selectPerson(select.value as UUID)) await this.router.navigateByUrl('/');

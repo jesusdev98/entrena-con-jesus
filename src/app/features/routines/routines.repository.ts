@@ -30,10 +30,13 @@ export class RoutinesRepository {
   /** Compare the entire last persisted draft, including same-timestamp changes from another tab. */
   async saveDraft(personId: UUID, draft: RoutineDraft, previous: RoutineDraft | null): Promise<void> {
     if (draft.personId !== personId) throw new StorageFailure('invalid', 'El borrador pertenece a otra persona.');
-    const tx = (await this.database.open()).transaction(['people', 'drafts'], 'readwrite');
+    const tx = (await this.database.open()).transaction(['people', 'routineRevisions', 'drafts'], 'readwrite');
     try {
       const owner = await tx.objectStore('people').get(personId);
       if (!owner || owner.archived) throw new StorageFailure('invalid', 'La persona no está disponible.');
+      const current = latestRevision(await tx.objectStore('routineRevisions').index('by-person').getAll(personId), draft.payload.planId);
+      if (draft.payload.baseRevisionId !== null && !current ||
+        current && draft.payload.baseRevisionId === null) throw new StorageFailure('conflict', 'La rutina ya no está disponible para editar. Guarda una copia si quieres conservar los cambios.');
       const stored = await tx.objectStore('drafts').index('by-editor').get([personId, draft.editorKey]);
       if (JSON.stringify(stored ?? null) !== JSON.stringify(previous)) throw new StorageFailure('conflict', 'El borrador cambió en otra pestaña. Compara antes de continuar.');
       await tx.objectStore('drafts').put(structuredClone(draft));
@@ -50,6 +53,21 @@ export class RoutinesRepository {
     if (current.personId !== personId) throw new StorageFailure('invalid', 'La rutina pertenece a otra persona.');
     return this.append(personId, current.planId, current.id, { name: current.name, content: current.content, archived });
   }
+  async deletePermanently(personId: UUID, expected: RoutineRevision): Promise<void> {
+    if (expected.personId !== personId) throw new StorageFailure('invalid', 'La rutina pertenece a otra persona.');
+    const tx = (await this.database.open()).transaction(['settings', 'people', 'routineRevisions', 'drafts'], 'readwrite');
+    try {
+      const settings = await tx.objectStore('settings').get('workspace');
+      const owner = await tx.objectStore('people').get(personId);
+      if (!settings?.mode || settings.activePersonId !== personId || !owner || owner.archived || (settings.mode === 'client' && settings.personalPersonId !== personId)) throw new StorageFailure('invalid', 'La persona activa cambió. Vuelve a su espacio.');
+      const revisions = (await tx.objectStore('routineRevisions').index('by-person').getAll(personId)).filter(item => item.planId === expected.planId);
+      if (!revisions.length || latestRevision(revisions, expected.planId)?.id !== expected.id) throw new StorageFailure('conflict', 'La rutina cambió o ya fue eliminada. Actualiza la lista antes de continuar.');
+      const drafts = (await tx.objectStore('drafts').index('by-person').getAll(personId)).filter(item => item.payload.kind === 'routine' && item.payload.planId === expected.planId);
+      for (const revision of revisions) await tx.objectStore('routineRevisions').delete([personId, revision.id]);
+      for (const draft of drafts) await tx.objectStore('drafts').delete([personId, draft.id]);
+      await tx.done;
+    } catch (error) { try { tx.abort(); } catch { /* Already aborted. */ } await tx.done.catch(() => undefined); throw storageFailure(error); }
+  }
   private async append(personId: UUID, planId: UUID, base: UUID | null,
     value: Pick<RoutineRevision, 'name' | 'content' | 'archived'>, draft?: RoutineDraft): Promise<RoutineRevision> {
     const tx = (await this.database.open()).transaction(['settings', 'people', 'routineRevisions', 'drafts'], 'readwrite');
@@ -60,7 +78,7 @@ export class RoutinesRepository {
       const current = latestRevision(await tx.objectStore('routineRevisions').index('by-person').getAll(personId), planId);
       if ((current?.id ?? null) !== base) throw new StorageFailure('conflict', 'La rutina cambió en otra pestaña. Compara la versión guardada con tu borrador.');
       if (draft) {
-        if (current?.archived) throw new StorageFailure('conflict', 'La rutina está archivada. Restaúrala o guarda una copia.');
+        if (draft.payload.planId !== planId || draft.payload.baseRevisionId !== base || current?.archived) throw new StorageFailure('conflict', 'La rutina ya no se puede editar.');
         const stored = await tx.objectStore('drafts').get([personId, draft.id]);
         if (draft.personId !== personId || JSON.stringify(stored) !== JSON.stringify(draft)) throw new StorageFailure('conflict', 'El borrador cambió o pertenece a otra persona. Compara antes de guardar.');
         await tx.objectStore('drafts').delete([personId, draft.id]);

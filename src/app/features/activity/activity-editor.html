@@ -3,9 +3,9 @@
   <p role="status">{{ store.status() }}</p>
   @if (store.draft(); as draft) {
     @let value = draft.payload.value;
-    <app-card><h2>{{ person().displayName }} · {{ date() }}</h2><p class="identity">Persona: {{ person().id }} · {{ person().reference }}</p>
+    <app-card><h2>{{ person().displayName }} · {{ date() }}</h2><p>{{ person().reference || 'Espacio local' }}</p>
       <p>Mediciones capturadas: {{ draft.payload.context.profile.age ?? 'sin edad' }} años · {{ draft.payload.context.profile.weightKg ?? 'sin peso' }} kg · {{ draft.payload.context.profile.heightCm ?? 'sin altura' }} cm.</p>
-      <small>Revisión del perfil: {{ draft.payload.context.profileRevisionId }}</small>
+      <small>Mediciones del perfil capturadas para este día.</small>
       <p>Los días pasados conservan sus mediciones y fuentes. Al abrir hoy o una fecha futura se aplica el perfil actual; los datos reales y ajustes propios del día se conservan. El objetivo se publica al guardar.</p>
       @if (profileError()) { <p role="alert">{{ profileError() }}</p><a [routerLink]="['/people', person().id]">Completar perfil</a> }
       <button appButton variant="secondary" [disabled]="store.busy() || store.conflict()" (click)="confirmRefresh.set(true)">Actualizar contexto desde el perfil actual</button>
@@ -36,7 +36,7 @@
           @let walkingValue = walking();
           <div class="field"><label for="walking-mode">Método de caminata</label><select id="walking-mode" [ngModel]="walkingValue.mode" (ngModelChange)="walkingMode($event)"><option value="cadence">Cadencia aproximada</option><option value="duration">Duración real declarada</option></select></div>
           <app-numeric-value fieldId="walking-value" [label]="walkingValue.mode === 'cadence' ? 'Cadencia (pasos/min)' : 'Duración real de caminata (min)'" [value]="walkingValue.mode === 'cadence' ? (walkingValue.stepsPerMinute ?? 100) : walkingValue.minutes" (changed)="walkingNumber($event)" hint="Al borrar se recupera la previsión de caminata; duración cero significa ninguna caminata adicional." />
-          <div class="field"><label for="walking-met">Actividad MET de caminata</label><select id="walking-met" [ngModel]="walkingValue.activityId ?? ''" (ngModelChange)="walkingId($event)"><option value="">Adultos: 17170 por defecto; mayores: selección obligatoria</option>@for (met of walkingChoices(); track met.id) { <option [value]="met.id">{{ met.label }} · {{ met.code }} · {{ met.met }} MET · O₂ {{ met.referenceMlO2PerKgMin }}</option> }</select></div>
+           <div class="field"><label for="walking-met">Actividad MET de caminata</label><select id="walking-met" [ngModel]="walkingValue.activityId ?? ''" (ngModelChange)="walkingId($event)"><option value="">Adultos: actividad predeterminada; mayores: selección obligatoria</option>@for (met of walkingChoices(); track met.id) { <option [value]="met.id">{{ met.label }} · {{ met.met }} MET · O₂ {{ met.referenceMlO2PerKgMin }}</option> }</select></div>
           <p>La tabla para mayores de 60 años usa referencia 2,7; la de adultos, 3,5 ml O₂/kg/min. Sin actividad compatible, utiliza gasto manual.</p>
         </app-card>
       }
@@ -51,7 +51,8 @@
     <app-card><app-target-summary [calculation]="store.calculation().value" /><button appButton [disabled]="!store.calculation().value || store.busy() || store.conflict()" (click)="store.save()">Guardar actividad y objetivo</button></app-card>
     @if (store.conflict()) {
       <app-card><section aria-label="Comparación de actividad"><h2>Conflicto: revisa ambas versiones</h2><p>Tus valores locales siguen visibles. Guardar está bloqueado hasta recuperar la versión durable. Puedes mantener esta comparación abierta.</p>
-        <h3>Mis datos locales</h3><pre>{{ draft.payload.value | json }}</pre><h3>Datos durables</h3><pre>{{ (store.remoteDraft()?.payload.value ?? store.remoteDay()?.activity) | json }}</pre>
+        <h3>Mis datos locales</h3><ul>@for (item of comparison(draft.payload.value); track $index) { <li>{{ item }}</li> }</ul>
+        <h3>Datos guardados</h3><ul>@for (item of comparison(store.remoteDraft()?.payload.value ?? store.remoteDay()?.activity); track $index) { <li>{{ item }}</li> }</ul>
         <button appButton variant="secondary" (click)="store.readConflict()">Mantener mis cambios y actualizar comparación</button>
         <button appButton [disabled]="!store.comparisonReady() || store.busy()" (click)="store.recover()">Descartar mis cambios y recuperar versión durable</button>
       </section></app-card>

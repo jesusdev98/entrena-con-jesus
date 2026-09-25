@@ -6,7 +6,7 @@ import type { AppDatabase } from '../../core/storage/database-schema';
 import type { BackupPayload } from './transfer.model';
 import { BACKUP_STORES, MAX_BACKUP_BYTES, checksum, parseBackup, validateBackup, type BackupFile } from './backup-schema';
 
-export interface BackupReview { file: BackupFile; previous: string; people: { id: string; name: string; kind: string }[];
+export interface BackupReview { file: BackupFile; previous: string; people: { id: string; name: string; kind: string; createdAt: string }[];
   counts: { store: string; incoming: number; existing: number }[] }
 
 async function snapshot(tx: IDBPTransaction<AppDatabase, typeof BACKUP_STORES[number][], 'readonly' | 'readwrite'>): Promise<BackupPayload> {
@@ -40,7 +40,7 @@ export class BackupExchange {
     const file = await parseBackup(text);
     const current = await this.current();
     return { file, previous: JSON.stringify(current),
-      people: file.payload.people.map(p => ({ id: p.id, name: p.displayName, kind: p.kind })),
+      people: file.payload.people.map(p => ({ id: p.id, name: p.displayName, kind: p.kind, createdAt: p.createdAt })),
       counts: BACKUP_STORES.map(store => ({ store, incoming: file.payload[store].length, existing: current[store].length })) };
   }
 
@@ -56,7 +56,9 @@ export class BackupExchange {
       // Queue all inserts before awaiting completion; failure aborts every store, including settings and drafts.
       const writes: Promise<unknown>[] = [];
       const queue = (request: Promise<unknown>) => { void request.catch(() => undefined); writes.push(request); };
-      for (const row of file.payload.settings) queue(tx.objectStore('settings').add(row));
+      // A restored virgin-workspace receipt never grants a second device permission to seed.
+      for (const row of file.payload.settings) queue(tx.objectStore('settings').add(row.demoSeed?.status === 'eligible'
+        ? { ...row, demoSeed: { version: 1, status: 'ineligible' } } : row));
       for (const row of file.payload.people) queue(tx.objectStore('people').add(row));
       for (const row of file.payload.profileRevisions) queue(tx.objectStore('profileRevisions').add(row));
       for (const row of file.payload.customExercises) queue(tx.objectStore('customExercises').add(row));

@@ -18,10 +18,10 @@
     <section class="context-bar" aria-label="Persona activa">
       <div class="context-person"><span class="avatar">{{ person.displayName.slice(0, 1).toUpperCase() }}</span>
         <div><span class="context-label">{{ workspace.isTrainer() ? 'Estás acompañando a' : 'Mi espacio personal' }}</span>
-          <strong data-testid="active-person-name">{{ person.displayName }}</strong><small>{{ person.reference || (person.kind === 'personal' ? 'Espacio personal' : 'Cliente') }} · {{ person.id.slice(0, 8) }}</small></div></div>
+           <strong data-testid="active-person-name">{{ person.displayName }}</strong><small>{{ personDescription(person, workspace.people()) }}</small></div></div>
       @if (workspace.isTrainer()) { <div class="context-controls"><label class="sr-only" for="active-person">Persona activa</label>
         <select id="active-person" [ngModel]="person.id" [disabled]="workspace.busy()" (change)="select($event)">
-          @for (item of workspace.availablePeople(); track item.id) { <option [value]="item.id">{{ item.displayName }} · {{ item.reference || (item.kind === 'personal' ? 'Mi espacio' : 'Cliente') }} · {{ item.id.slice(0, 8) }}</option> }
+           @for (item of workspace.availablePeople(); track item.id) { <option [value]="item.id">{{ personLabel(item, workspace.people()) }}</option> }
         </select><a routerLink="/people">Gestionar personas</a></div> }
     </section>
   } }

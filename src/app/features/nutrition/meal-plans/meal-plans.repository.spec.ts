@@ -2,11 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { deleteDB } from 'idb';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Database, DATABASE_NAME } from '../../../core/storage/database';
-import { newId, type UUID } from '../../../core/domain/identity';
+import { localDate, newId, type UUID } from '../../../core/domain/identity';
 import { PeopleRepository } from '../../people/people.repository';
 import { emptyProfile } from '../../people/person.model';
 import { MealPlansRepository, latestPlan } from './meal-plans.repository';
 import { mealDraft } from './meal.fixtures';
+import { DiaryRepository } from '../diary/diary.repository';
+import { BackupExchange } from '../../transfers/backup-exchange';
 
 describe('owner-bound meal revisions and drafts', () => {
   let db: Database; let repo: MealPlansRepository; let people: PeopleRepository; let owner: UUID;
@@ -67,5 +69,58 @@ describe('owner-bound meal revisions and drafts', () => {
     await expect(repo.save(owner, draft)).rejects.toMatchObject({ code: 'quota' });
     expect(await repo.listDrafts(owner)).toEqual([draft]); expect(await repo.history(owner)).toEqual([]);
     fail.mockRestore(); await repo.save(owner, draft); expect(await repo.listDrafts(owner)).toEqual([]);
+  });
+  it('removes the complete plan and editor drafts without changing actual consumption, receipt undo or backup', async () => {
+    const first = await initial(); const day = localDate('2026-01-01'); const diary = TestBed.inject(DiaryRepository);
+    const meal = first.content.weeks[0].days[0].meals[0]; const receipt = await diary.consume(owner, day, first, meal, [175]);
+    const logs = await diary.day(owner, day); const edit = mealDraft(owner, first.planId, first.id);
+    edit.payload.content = structuredClone(first.content); await repo.saveDraft(owner, edit, null);
+    const other = mealDraft(owner); await repo.saveDraft(owner, other, null);
+    const archived = await repo.setArchived(owner, first, true);
+    await repo.deletePermanently(owner, archived); db.close();
+    expect(await repo.history(owner)).toEqual([]); expect(await repo.list(owner)).toEqual([]);
+    expect(await repo.listDrafts(owner)).toEqual([other]);
+    expect(await diary.day(owner, day)).toEqual(logs); expect(await diary.receipts(owner, day)).toEqual([receipt]);
+    const backup = TestBed.inject(BackupExchange); const text = await backup.export(); const review = await backup.review(text);
+    expect(review.file.payload.mealPlanRevisions).toEqual([]); expect(review.file.payload.mealConsumptions).toEqual([receipt]);
+    await backup.restore(review); expect(await diary.day(owner, day)).toEqual(logs);
+    await expect(repo.saveDraft(owner, edit, null)).rejects.toMatchObject({ code: 'conflict' });
+    await expect(repo.save(owner, edit)).rejects.toMatchObject({ code: 'conflict' });
+    expect((await diary.undo(owner, receipt)).state).toBe('undone'); expect(await diary.day(owner, day)).toEqual([]);
+  });
+  it('rejects stale and cross-owner deletion and rolls back partially deleted revisions on failure', async () => {
+    const first = await initial(); const edit = mealDraft(owner, first.planId, first.id);
+    await repo.saveDraft(owner, edit, null);
+    const archived = await repo.setArchived(owner, first, true);
+    await expect(repo.deletePermanently(owner, first)).rejects.toMatchObject({ code: 'conflict' });
+    const other = newId(); await people.savePerson(other, { displayName: 'Alex', reference: '', profile: emptyProfile() }, null);
+    await expect(repo.deletePermanently(other, archived)).rejects.toMatchObject({ code: 'invalid' });
+    await people.selectPerson(other);
+    const sameId = mealDraft(other, first.planId); await repo.saveDraft(other, sameId, null);
+    const otherSaved = await repo.save(other, sameId); await people.selectPerson(owner);
+    const original = IDBObjectStore.prototype.delete;
+    vi.spyOn(IDBObjectStore.prototype, 'delete').mockImplementation(function (this: IDBObjectStore, key: IDBValidKey | IDBKeyRange) {
+      if (this.name === 'drafts') throw new DOMException('Full', 'QuotaExceededError');
+      return original.call(this, key);
+    });
+    await expect(repo.deletePermanently(owner, archived)).rejects.toMatchObject({ code: 'quota' });
+    expect(await repo.history(owner)).toEqual(expect.arrayContaining([first, archived])); expect(await repo.history(owner)).toHaveLength(2); expect(await repo.listDrafts(owner)).toEqual([edit]);
+    vi.restoreAllMocks(); await people.selectPerson(other);
+    await expect(repo.deletePermanently(owner, archived)).rejects.toMatchObject({ code: 'invalid' });
+    await people.selectPerson(owner); await repo.deletePermanently(owner, archived);
+    await expect(repo.deletePermanently(owner, archived)).rejects.toMatchObject({ code: 'conflict' });
+    expect(await repo.list(other)).toEqual([otherSaved]);
+  });
+  it('isolates permanent deletion for same-name clients sharing a plan ID', async () => {
+    const a = newId(), b = newId(), id = newId();
+    for (const client of [a, b]) await people.savePerson(client, { displayName: 'Alex', reference: '', profile: emptyProfile() }, null);
+    await people.selectPerson(a); const aDraft = mealDraft(a, id); await repo.saveDraft(a, aDraft, null);
+    const aPlan = await repo.save(a, aDraft);
+    await people.selectPerson(b); const bDraft = mealDraft(b, id); await repo.saveDraft(b, bDraft, null);
+    const bPlan = await repo.save(b, bDraft);
+    const bEdit = mealDraft(b, id, bPlan.id); await repo.saveDraft(b, bEdit, null);
+    await people.selectPerson(a); await repo.deletePermanently(a, aPlan);
+    expect(await repo.list(a)).toEqual([]); expect(await repo.list(b)).toEqual([bPlan]);
+    expect(await repo.listDrafts(b)).toEqual([bEdit]);
   });
 });

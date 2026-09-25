@@ -1,7 +1,8 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 async function onboard(page: Page, path = '/'): Promise<void> {
-  await page.goto(path); await page.getByRole('radio', { name: /Entrenador/ }).check();
+  await page.goto(path); await markLegacyWorkspace(page); await page.getByRole('radio', { name: /Entrenador/ }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Jesús');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();
   await expect(page.getByTestId('active-person-name')).toHaveText('Jesús');
@@ -98,7 +99,7 @@ test('mixed multiweek plan, nested duplication/reorder, immutable original, arch
   await page.getByRole('button', { name: 'Archivar Plan independiente', exact: true }).click(); await expect(page.getByTestId('routine-card')).toHaveCount(1);
   await page.getByRole('button', { name: 'Ver rutinas archivadas', exact: true }).click();
   await page.getByRole('button', { name: 'Restaurar Plan independiente', exact: true }).click(); await expect(page.getByTestId('routine-card')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Ver rutinas activas', exact: true }).click(); await expect(page.getByTestId('routine-card')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Ver rutinas activas', exact: true }).first().click(); await expect(page.getByTestId('routine-card')).toHaveCount(2);
 });
 
 test('routine drafts recover after reload and stay with same-name people across modes', async ({ page }) => {

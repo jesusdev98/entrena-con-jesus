@@ -2,11 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { deleteDB } from 'idb';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Database, DATABASE_NAME } from '../../core/storage/database';
-import { newId, type UUID } from '../../core/domain/identity';
+import { localDate, newId, type UUID } from '../../core/domain/identity';
 import { PeopleRepository } from '../people/people.repository';
 import { emptyProfile } from '../people/person.model';
 import { RoutinesRepository, latestRevision } from './routines.repository';
 import { routineDraft } from './routine.fixtures';
+import { TrainingRepository } from '../training/training.repository';
+import { BackupExchange } from '../transfers/backup-exchange';
 
 describe('append-only owner-bound routine transactions', () => {
   let database: Database; let repository: RoutinesRepository; let people: PeopleRepository; let owner: UUID;
@@ -78,5 +80,61 @@ describe('append-only owner-bound routine transactions', () => {
   it('detects divergent heads rather than sorting equal timestamps into silent last-write-wins', async () => {
     const saved = await initial();
     expect(() => latestRevision([saved, { ...saved, id: newId() }], saved.planId)).toThrow('divergentes');
+  });
+  it('permanently removes every revision and matching editor draft while retaining real completed training and a valid backup', async () => {
+    const first = await initial(); const week = first.content.weeks[0];
+    const training = TestBed.inject(TrainingRepository);
+    const draft = await training.start(owner, first.id, week.id, week.days[0].id, localDate('2026-01-01'));
+    const previous = structuredClone(draft);
+    draft.payload.session.exercises = draft.payload.session.exercises.map(exercise => ({ ...exercise,
+      sets: exercise.sets.map(set => ({ ...set, status: 'skipped' as const, actual: null, rpe: null })) }));
+    await training.saveDraft(owner, draft, previous);
+    const complete = await training.save(owner, draft);
+    const edited = routineDraft(owner, first.planId, first.id); edited.payload.content = structuredClone(first.content);
+    await repository.saveDraft(owner, edited, null);
+    const other = routineDraft(owner); await repository.saveDraft(owner, other, null);
+    const archived = await repository.setArchived(owner, first, true);
+    await repository.deletePermanently(owner, archived); database.close();
+    expect(await repository.history(owner)).toEqual([]); expect(await repository.list(owner)).toEqual([]);
+    expect(await repository.listDrafts(owner)).toEqual([other]);
+    expect(await training.get(owner, complete.id)).toEqual(complete);
+    const backup = TestBed.inject(BackupExchange); const text = await backup.export(); const review = await backup.review(text);
+    expect(review.file.payload.routineRevisions).toEqual([]); expect(review.file.payload.trainingSessions).toEqual([complete]);
+    await backup.restore(review); expect(await training.get(owner, complete.id)).toEqual(complete);
+    await expect(repository.saveDraft(owner, edited, null)).rejects.toMatchObject({ code: 'conflict' });
+    await expect(repository.save(owner, edited)).rejects.toMatchObject({ code: 'conflict' });
+  });
+  it('rejects stale or wrong-person deletion and rolls back revision and draft deletes together', async () => {
+    const first = await initial(); const edit = routineDraft(owner, first.planId, first.id);
+    await repository.saveDraft(owner, edit, null);
+    const otherPerson = await client(); await expect(repository.deletePermanently(otherPerson, first)).rejects.toMatchObject({ code: 'invalid' });
+    await people.selectPerson(otherPerson);
+    const sameId = routineDraft(otherPerson, first.planId); await repository.saveDraft(otherPerson, sameId, null);
+    const otherSaved = await repository.save(otherPerson, sameId); await people.selectPerson(owner);
+    const archived = await repository.setArchived(owner, first, true);
+    await expect(repository.deletePermanently(owner, first)).rejects.toMatchObject({ code: 'conflict' });
+    const original = IDBObjectStore.prototype.delete;
+    vi.spyOn(IDBObjectStore.prototype, 'delete').mockImplementation(function (this: IDBObjectStore, key: IDBValidKey | IDBKeyRange) {
+      if (this.name === 'drafts') throw new DOMException('Full', 'QuotaExceededError');
+      return original.call(this, key);
+    });
+    await expect(repository.deletePermanently(owner, archived)).rejects.toMatchObject({ code: 'quota' });
+    expect(await repository.history(owner)).toEqual(expect.arrayContaining([first, archived])); expect(await repository.history(owner)).toHaveLength(2); expect(await repository.listDrafts(owner)).toEqual([edit]);
+    vi.restoreAllMocks(); await people.selectPerson(otherPerson);
+    await expect(repository.deletePermanently(owner, archived)).rejects.toMatchObject({ code: 'invalid' });
+    await people.selectPerson(owner); await repository.deletePermanently(owner, archived);
+    await expect(repository.deletePermanently(owner, archived)).rejects.toMatchObject({ code: 'conflict' });
+    expect(await repository.list(otherPerson)).toEqual([otherSaved]);
+  });
+  it('keeps another same-name client’s identical plan ID and draft when deleting one client’s plan', async () => {
+    const a = await client(), b = await client(), id = newId();
+    await people.selectPerson(a); const aDraft = routineDraft(a, id); await repository.saveDraft(a, aDraft, null);
+    const aPlan = await repository.save(a, aDraft);
+    await people.selectPerson(b); const bDraft = routineDraft(b, id); await repository.saveDraft(b, bDraft, null);
+    const bPlan = await repository.save(b, bDraft);
+    const bEdit = routineDraft(b, id, bPlan.id); await repository.saveDraft(b, bEdit, null);
+    await people.selectPerson(a); await repository.deletePermanently(a, aPlan);
+    expect(await repository.list(a)).toEqual([]); expect(await repository.list(b)).toEqual([bPlan]);
+    expect(await repository.listDrafts(b)).toEqual([bEdit]);
   });
 });

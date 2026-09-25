@@ -15,35 +15,39 @@ import { localDate } from '../../core/domain/identity';
 import { storageFailure } from '../../core/storage/database';
 import type { UUID } from '../../core/domain/identity';
 import { BackupPanel } from './backup-panel';
+import { RouterLink } from '@angular/router';
+import { personLabel } from '../people/person-label';
+import { filePersonLabel, reviewLabel, reviewPath, reviewValue } from './review-display';
 
-@Component({ selector: 'app-transfers-page', imports: [Card, Button, BackupPanel], changeDetection: ChangeDetectionStrategy.OnPush,
+@Component({ selector: 'app-transfers-page', imports: [Card, Button, BackupPanel, RouterLink], changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<div class="stack transfer-page"><header><p class="eyebrow">Intercambio manual</p><h1>Compartir planes</h1>
     <p>Archivos JSON de planes o progreso real. Entrenador y cliente se envían el archivo manualmente; no hay cuentas ni verificación de identidad.</p></header>
-    <app-card><h2>Persona local seleccionada</h2><p><strong>{{ workspace.activePerson()?.displayName }}</strong> · {{ workspace.activePerson()?.reference || 'Sin referencia' }}</p>
-      <p class="identity">ID: {{ workspace.activePerson()?.id }}</p><p class="muted">Antes de importar, selecciona la persona destinataria en el espacio de trabajo. Los nombres repetidos no vinculan personas.</p></app-card>
+     <app-card><h2>Persona local seleccionada</h2><p><strong>{{ localPerson() }}</strong></p>
+       <p class="muted">Antes de importar, selecciona la persona destinataria en el espacio de trabajo. Los nombres repetidos no vinculan personas.</p></app-card>
     <app-card><h2>Exportar un plan</h2><label for="transfer-plan">Plan guardado de esta persona</label>
-      <select id="transfer-plan" [value]="selected()" (change)="selected.set($any($event.target).value)"><option value="">Selecciona un plan</option>
-        @for (item of plans(); track item.key) { <option [value]="item.key">{{ item.label }}</option> }</select>
+       <select id="transfer-plan" [value]="selected()" (change)="selected.set($any($event.target).value)"><option value="">Selecciona un plan</option>
+         @for (item of plans(); track item.key) { <option [value]="item.key">{{ item.label }}</option> }</select>
+       @if (!plans().length) { <p class="notice">No hay planes activos para compartir. Crea una rutina o un plan semanal y guárdalo antes de exportar.</p><a routerLink="/routines">Crear rutina</a> · <a routerLink="/meal-plans">Crear plan de comidas</a> }
       <button appButton [disabled]="busy() || !selected()" (click)="download(selected())">Descargar JSON</button>
       <p class="muted">Incluye el plan elegido y sus alimentos o ejercicios personalizados necesarios. Las ilustraciones y catálogos incluidos en la aplicación se referencian por ID.</p></app-card>
     <app-card><h2>Importar y revisar</h2><label for="transfer-file">Archivo JSON recibido</label>
       <input id="transfer-file" type="file" accept=".json,application/json" [disabled]="busy()" (change)="pick($event)" />
-      <p>Destino elegido: <strong>{{ workspace.activePerson()?.displayName }}</strong> · {{ workspace.activePerson()?.reference || 'Sin referencia' }} ({{ workspace.activePerson()?.id }})</p>
+       <p>Destino elegido: <strong>{{ localPerson() }}</strong></p>
       @if (review(); as result) {
         <section class="review" aria-label="Revisión antes de importar">
-          <h3>Revisión previa</h3><p>Origen declarado por el archivo: {{ result.file.sourcePerson.displayName }} · ID {{ result.file.sourcePerson.personId }} · espacio {{ result.file.sourcePerson.workspaceId }}.</p>
-          <p>Exportación {{ result.file.exportId }} · {{ result.file.exportedAt }}. Esta referencia no demuestra quién creó el archivo.</p>
-          <p>Versión recibida: {{ result.file.payload.plans[0].revisionId }} · base {{ result.file.payload.plans[0].parentRevisionId || 'sin base' }}.
-            Versión local: {{ result.local?.id || 'ninguna' }} · origen vinculado {{ result.local?.exchange?.revisionId || 'local' }}.</p>
-          @if (result.nativeSubject) { <p>Esta identidad del archivo corresponde a la persona local seleccionada.</p> }
-          @else if (result.mappingId) { <p>La identidad externa ya está vinculada a esta persona local.</p> }
-          @else { <p>Se creará el vínculo de identidad externa únicamente después de aplicar esta decisión.</p> }
+           <h3>Revisión previa</h3><p>Persona del archivo · {{ filePersonLabel(result.file.sourcePerson.displayName) }}.</p>
+           <p>Archivo creado: {{ result.file.exportedAt }}. Esta fecha no demuestra quién lo creó.</p>
+           <p>Plan recibido: {{ reviewLabel(result.file.payload.plans[0].name) }} · {{ result.file.payload.plans[0].parentRevisionId ? 'con versión anterior' : 'primera versión' }}.
+             Plan local: {{ result.local?.name || 'ninguno' }} · {{ result.local?.exchange ? 'importado anteriormente' : 'local' }}.</p>
+           @if (result.nativeSubject) { <p>Las referencias del archivo coinciden con el espacio local; la procedencia del archivo sigue sin verificarse.</p> }
+           @else if (result.mappingId) { <p>Este origen ya se vinculó a esta persona local en una importación anterior.</p> }
+           @else { <p>Se guardará un vínculo de origen únicamente después de aplicar esta decisión. El archivo no verifica la identidad de quien lo envió.</p> }
           @if (result.divergent) { <p class="notice">Las revisiones divergen. Compara y decide; no se fusionarán automáticamente.</p> }
           @if (result.repeated) { <p>Esta revisión ya se importó. Aplicarla otra vez no duplicará el plan.</p> }
           <h4>Cambios ({{ result.differences.length }})</h4>
           @if (!result.differences.length) { <p>No hay cambios en los campos del plan.</p> }
-          <div class="diff-list">@for (change of result.differences; track change.path) { <div class="diff-row"><strong>{{ change.path }}</strong>
-            <span>Antes: {{ change.before }}</span><span>Recibido: {{ change.after }}</span></div> }</div>
+           <div class="diff-list">@for (change of result.differences; track change.path) { <div class="diff-row"><strong>{{ reviewPath(change.path) }}</strong>
+             <span>Antes: {{ reviewValue(change.path, change.before) }}</span><span>Recibido: {{ reviewValue(change.path, change.after) }}</span></div> }</div>
           <fieldset><legend>Decisión para este plan</legend>
             <label><input type="radio" name="transfer-decision" value="accept" [checked]="decision() === 'accept'" (change)="decision.set('accept')" /> Aceptar revisión recibida</label>
             <label><input type="radio" name="transfer-decision" value="keep" [checked]="decision() === 'keep'" (change)="decision.set('keep')" /> Conservar original local</label>
@@ -61,20 +65,20 @@ import { BackupPanel } from './backup-panel';
       <p class="muted">Máximo 31 días y 512 KiB por archivo. Los borradores, planes y objetivos diarios no se incluyen.</p></app-card>
     <app-card><h2>Importar progreso real</h2><label for="progress-file">Archivo de progreso JSON recibido</label>
       <input id="progress-file" type="file" accept=".json,application/json" [disabled]="busy()" (change)="pickProgress($event)" />
-      <p>Destino local: <strong>{{ workspace.activePerson()?.displayName }}</strong> · {{ workspace.activePerson()?.reference || 'Sin referencia' }} · ID {{ workspace.activePerson()?.id }}.</p>
+       <p>Destino local: <strong>{{ localPerson() }}</strong>.</p>
       @if (progressReview(); as result) { <section class="review" aria-label="Revisión de progreso antes de importar">
-        <h3>Revisión del progreso</h3><p>Origen declarado: {{ result.file.sourcePerson.displayName }} · persona {{ result.file.sourcePerson.personId }} · espacio {{ result.file.sourcePerson.workspaceId }}.</p>
-        <p>Archivo {{ result.file.exportId }} · {{ result.file.exportedAt }} · intervalo {{ result.file.from }} a {{ result.file.through }}. El ID no verifica identidad.</p>
-        <p>{{ result.nativeSubject ? 'Origen local seleccionado' : result.mappingId ? 'Identidad externa ya vinculada a esta persona' : 'Se vinculará esta identidad externa solo al confirmar' }}.</p>
+         <h3>Revisión del progreso</h3><p>Persona del archivo · {{ filePersonLabel(result.file.sourcePerson.displayName) }}.</p>
+         <p>Archivo creado: {{ result.file.exportedAt }} · intervalo {{ result.file.from }} a {{ result.file.through }}. Esta fecha no verifica su procedencia.</p>
+         <p>{{ result.nativeSubject ? 'Referencias coincidentes con el espacio local; procedencia sin verificar' : result.mappingId ? 'Origen vinculado en una importación anterior; procedencia sin verificar' : 'Se guardará el vínculo solo al confirmar; procedencia sin verificar' }}.</p>
         <p>{{ result.file.payload.sessions.length }} sesiones finalizadas · {{ result.file.payload.foodLogs.length }} alimentos reales.</p>
-        @for (row of result.records; track row.key) { <div class="diff-row" data-testid="progress-record"><h4>{{ row.kind === 'session' ? 'Sesión' : 'Alimento' }} · {{ row.date }} · {{ row.label }}</h4>
-          <p>ID extranjero: {{ row.key }} · revisión recibida {{ row.revision }} · local {{ row.local?.id || 'ninguno' }} · {{ row.status === 'added' ? 'Se añadirá' : row.status === 'already-present' ? 'Ya está presente' : 'Conflicto: el registro cambió' }}.</p>
-          @if (row.status === 'conflicting') { <fieldset><legend>Decisión para {{ row.key }}</legend>
+         @for (row of result.records; track row.key) { <div class="diff-row" data-testid="progress-record"><h4>{{ row.kind === 'session' ? 'Sesión' : 'Alimento' }} · {{ row.date }} · {{ reviewLabel(row.label) }}</h4>
+           <p>{{ row.kind === 'session' ? 'Versión recibida: ' + row.revision : 'Actualizado: ' + row.revision }} · {{ row.local ? 'Hay un registro local' : 'Sin registro local' }} · {{ row.status === 'added' ? 'Se añadirá' : row.status === 'already-present' ? 'Ya está presente' : 'Conflicto: el registro cambió' }}.</p>
+           @if (row.status === 'conflicting') { <fieldset><legend>Decisión para {{ row.kind === 'session' ? 'sesión' : 'alimento' }} del {{ row.date }}: {{ reviewLabel(row.label) }}</legend>
             <label><input type="radio" [name]="row.key" value="keep" [checked]="progressDecisions()[row.key] === 'keep'" (change)="chooseProgress(row.key, 'keep')" /> Conservar registro local</label>
             <label><input type="radio" [name]="row.key" value="replace" [checked]="progressDecisions()[row.key] === 'replace'" (change)="chooseProgress(row.key, 'replace')" /> Reemplazar con recibido</label>
           </fieldset> }
           @if (row.differences.length) { <details><summary>Comparar fecha y métricas ({{ row.differences.length }})</summary>
-            <div class="diff-list">@for (difference of row.differences; track difference.path) { <div class="diff-row"><strong>{{ difference.path }}</strong><span>Antes: {{ difference.before }}</span><span>Recibido: {{ difference.after }}</span></div> }</div>
+             <div class="diff-list">@for (difference of row.differences; track difference.path) { <div class="diff-row"><strong>{{ reviewPath(difference.path) }}</strong><span>Antes: {{ reviewValue(difference.path, difference.before) }}</span><span>Recibido: {{ reviewValue(difference.path, difference.after) }}</span></div> }</div>
           </details> }
         </div> }
         <label><input type="checkbox" [checked]="progressConfirmed()" (change)="progressConfirmed.set($any($event.target).checked)" /> Confirmo la persona destinataria y las decisiones del progreso</label>
@@ -89,6 +93,8 @@ import { BackupPanel } from './backup-panel';
     fieldset label { display: block; margin: .65rem 0; }` })
 export class TransfersPage {
   protected readonly workspace = inject(WorkspaceStore);
+  protected readonly reviewPath = reviewPath; protected readonly reviewValue = reviewValue; protected readonly reviewLabel = reviewLabel; protected readonly filePersonLabel = filePersonLabel;
+  protected localPerson(): string { const person = this.workspace.activePerson(); return person ? personLabel(person, this.workspace.people()) : 'Selecciona una persona local'; }
   private readonly routines = inject(RoutinesRepository);
   private readonly meals = inject(MealPlansRepository);
   private readonly exercises = inject(ExerciseCatalogStore);
@@ -142,7 +148,8 @@ export class TransfersPage {
       await this.resources();
       const text = await this.exchange.export(id, type, planId, this.exercises.exercises(), this.foods.foods());
       const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-      const link = document.createElement('a'); link.href = url; link.download = `entrena-plan-${type}-${planId}.json`; link.click();
+       const slug = (this.plans().find(plan => plan.key === key)?.label ?? 'plan').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 55) || 'plan';
+       const link = document.createElement('a'); link.href = url; link.download = `entrena-plan-${slug}-${new Date().toISOString().slice(0, 10)}.json`; link.click();
       setTimeout(() => URL.revokeObjectURL(url), 60000);
       this.message.set('Archivo JSON descargado. Compártelo manualmente con la persona indicada.');
     } catch (error) { this.error.set(error instanceof Error ? error.message : 'No se pudo exportar el plan.'); }

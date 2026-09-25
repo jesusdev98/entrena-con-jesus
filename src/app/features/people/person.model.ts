@@ -33,6 +33,18 @@ export interface Person {
   updatedAt: Instant;
 }
 export interface ProfileRevision extends OwnedRecord { readonly profile: PersonProfile }
+export interface DemoRecordIdentity { id: UUID; createdAt: Instant }
+export interface DemoSeedReceipt {
+  personId: UUID;
+  trainerPersonId: UUID | null;
+  trainerPersonCreatedAt: Instant | null;
+  profileRevision: DemoRecordIdentity;
+  routine: { planId: UUID; revision: DemoRecordIdentity };
+  mealPlan: { planId: UUID; revision: DemoRecordIdentity };
+  sessions: DemoRecordIdentity[];
+  foodLogs: DemoRecordIdentity[];
+  snapshots: DemoRecordIdentity[];
+}
 export interface AppSettings {
   id: 'workspace';
   workspaceId: UUID;
@@ -40,6 +52,8 @@ export interface AppSettings {
   personalPersonId: UUID;
   activePersonId: UUID;
   lastTrainerPersonId: UUID;
+  /** Set at virgin database bootstrap; absence never implies eligibility. */
+  demoSeed?: { version: 1; status: 'eligible' | 'seeded' | 'ineligible' | 'cleared'; receipt?: DemoSeedReceipt };
 }
 export interface PersonFormValue {
   displayName: string;

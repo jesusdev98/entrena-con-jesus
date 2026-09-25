@@ -14,16 +14,16 @@ import type { TrainingSession } from '../training/training.model';
       <app-numeric-value [fieldId]="key() + '-steps'" [label]="'Pasos incluidos · ' + label()" [value]="value.includedSteps" (changed)="patch({ includedSteps: $event })" />
       @for (block of value.blocks; track block.id; let i = $index) {
         <fieldset class="stack" data-testid="activity-block"><legend>{{ label() }} · bloque {{ i + 1 }}</legend>
-          <p>{{ block.linkedTrainingSessionId ? 'Sesión real vinculada: ' + block.linkedTrainingSessionId : 'Bloque manual: comprueba que no repite una sesión ni otro bloque.' }}</p>
+           <p>{{ block.linkedTrainingSessionId ? linkedLabel(block.linkedTrainingSessionId) : 'Bloque manual: comprueba que no repite una sesión ni otro bloque.' }}</p>
           <app-numeric-value [fieldId]="block.id + '-minutes'" [label]="'Duración (min) · ' + label() + ' · ' + (i + 1)" [value]="block.minutes" (changed)="replace(block.id, { minutes: $event })" />
           <div class="field"><label [for]="block.id + '-mode'">Método · {{ label() }} · {{ i + 1 }}</label>
             <select [id]="block.id + '-mode'" [ngModel]="block.expenditure.mode" (ngModelChange)="method(block, $event)"><option value="met">Actividad del Compendio</option><option value="manual-net">Gasto neto manual (sobre el basal)</option></select></div>
           @if (block.expenditure.mode === 'met') {
             <div class="field"><label [for]="block.id + '-met'">Actividad MET · {{ label() }} · {{ i + 1 }}</label>
               <select [id]="block.id + '-met'" [ngModel]="block.expenditure.activityId" (ngModelChange)="replace(block.id, { expenditure: { mode: 'met', activityId: $event } })">
-                <option value="">Selecciona una actividad compatible</option>@for (met of choices(); track met.id) { <option [value]="met.id">{{ met.label }} · {{ met.code }} · {{ met.met }} MET</option> }
+                 <option value="">Selecciona una actividad compatible</option>@for (met of choices(); track met.id) { <option [value]="met.id">{{ met.label }} · {{ met.met }} MET</option> }
               </select></div>
-            @if (source(block.expenditure.activityId); as met) { <p class="muted">{{ met.table === 'adult' ? 'Adultos' : 'Mayores de 60 · MET60+' }} · {{ met.edition }} · referencia {{ met.referenceMlO2PerKgMin }} ml O₂/kg/min. <a [href]="met.source.url" target="_blank" rel="noreferrer">Fuente {{ met.code }}</a></p><small>{{ met.source.description }}</small> }
+             @if (source(block.expenditure.activityId); as met) { <p class="muted">{{ met.table === 'adult' ? 'Adultos' : 'Mayores de 60 años' }} · {{ met.edition }} · referencia {{ met.referenceMlO2PerKgMin }} ml O₂/kg/min. <a [href]="met.source.url" target="_blank" rel="noreferrer">Consultar fuente del Compendio para {{ met.label }}</a></p><small>{{ met.source.description }}</small> }
           } @else {
             <app-numeric-value [fieldId]="block.id + '-net'" [label]="'Gasto neto (kcal) · ' + label() + ' · ' + (i + 1)" [value]="block.expenditure.netKcal" (changed)="net(block, $event)" />
             <div class="field"><label [for]="block.id + '-reason'">Fuente o motivo · {{ label() }} · {{ i + 1 }}</label><input [id]="block.id + '-reason'" [ngModel]="block.expenditure.reason" (ngModelChange)="reason(block, $event)" /></div>
@@ -37,7 +37,7 @@ import type { TrainingSession } from '../training/training.model';
       <button appButton variant="secondary" (click)="add()">Añadir bloque manual · {{ label() }}</button>
       @if (linkable()) {
         <div class="field"><label [for]="key() + '-session'">Sesión finalizada · {{ label() }}</label><select [id]="key() + '-session'" #session><option value="">Selecciona una sesión</option>
-          @for (item of available(); track item.id) { <option [value]="item.id">{{ item.labels.routine }} · {{ item.labels.day }} · {{ item.durationMinutes === null ? 'Duración pendiente' : item.durationMinutes + ' min' }} · {{ item.id }}</option> }
+           @for (item of available(); track item.id; let index = $index) { <option [value]="item.id">{{ item.date }} · {{ item.labels.routine }} · {{ item.labels.day }} · {{ item.durationMinutes === null ? 'Duración pendiente' : item.durationMinutes + ' min' }} · sesión {{ index + 1 }}</option> }
         </select></div><button appButton variant="secondary" (click)="link(session.value); session.value = ''">Vincular sesión · {{ label() }}</button>
         <p>No se deduce el MET de RPE, cargas ni repeticiones. Selecciona el tipo real y completa la duración si falta.</p>
       }
@@ -53,6 +53,10 @@ export class ActivityGroupEditor {
   readonly changed = output<GroupDraft | null>();
   readonly available = computed(() => this.sessions().filter(session => !this.group()?.blocks.some(block => block.linkedTrainingSessionId === session.id)));
   source(id: string) { return this.choices().find(met => met.id === id); }
+  linkedLabel(id: string): string {
+    const session = this.sessions().find(item => item.id === id);
+    return session ? `Sesión real vinculada: ${session.date} · ${session.labels.routine} · ${session.labels.day}` : 'Sesión real vinculada a este bloque.';
+  }
   patch(patch: Partial<GroupDraft>): void { if (this.group()) this.changed.emit({ ...this.group()!, ...patch }); }
   replace(id: string, patch: Partial<BlockDraft>): void { this.patch({ blocks: this.group()!.blocks.map(block => block.id === id ? { ...block, ...patch } : block) }); }
   add(): void { this.patch({ blocks: [...this.group()!.blocks, { id: newId(), minutes: null, expenditure: { mode: 'met', activityId: '' } }] }); }

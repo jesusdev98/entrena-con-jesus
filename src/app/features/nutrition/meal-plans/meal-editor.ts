@@ -21,7 +21,7 @@ import { duplicateWeek, editRows, newWeek, previewTotal, type MealPlanWeekDraft,
     @if (store.loading()) { <p role="status">Cargando borrador del plan…</p> }
     @if (store.error()) { <p class="error" role="alert">{{ store.error() }}</p> }
     @if (store.conflict()) { <div class="notice stack" role="alert"><h3>El plan o borrador cambió</h3>
-      <p>Guardado: {{ store.current()?.name || 'Sin plan guardado' }} · {{ store.current()?.id || 'nuevo' }}.
+       <p>Guardado: {{ store.current()?.name || 'Ya no hay plan guardado' }}.
         Otro borrador: {{ store.otherDraft()?.payload?.name || 'ninguno' }}. Compara tus cambios antes de continuar.</p>
       <div class="actions"><button appButton variant="secondary" (click)="store.resolve('current')">Usar versión guardada</button>
         <button appButton variant="secondary" (click)="store.resolve('other')" [disabled]="!store.otherDraft()">Usar otro borrador</button>

@@ -18,7 +18,7 @@ import { catalogChoice, customChoice, type FoodChoice } from './food.model';
 @Component({ selector: 'app-person-food-catalog', imports: [ReactiveFormsModule, Button, FoodPicker, CustomFoodEditor],
   changeDetection: ChangeDetectionStrategy.OnPush, template: `<div class="stack">
     <section class="notice" aria-label="Persona del catálogo"><h2>Alimentos personalizados de {{ person().displayName }}</h2>
-      <p>{{ person().reference || 'Espacio local' }}</p><p class="identity">ID de la persona: {{ person().id }}</p>
+       <p>{{ person().reference || 'Espacio local' }}</p>
       <button #newButton appButton [disabled]="editor() !== null || loading() || busy()" (click)="editor.set('new')">Añadir alimento personalizado</button>
       <p class="muted">Este botón también recupera el borrador de un alimento nuevo.</p></section>
     @if (message()) { <p role="status">{{ message() }}</p> }
@@ -34,8 +34,9 @@ import { catalogChoice, customChoice, type FoodChoice } from './food.model';
       </select></div>
       @if (catalog.status() === 'loading' || catalog.status() === 'idle') { <p role="status">Cargando catálogo USDA local…</p> }
       @if (catalog.error()) { <div class="error" role="alert"><p>{{ catalog.error() }}</p><button appButton variant="secondary" (click)="catalog.load()">Reintentar catálogo USDA</button></div> }
-      @if (canBrowse()) {
-        @for (source of [origin()]; track source) { <app-food-picker [foods]="choices()" (selected)="showDetail($event)" /> }
+       @if (canBrowse()) {
+         @if ((origin() === 'custom' || origin() === 'archived') && !choices().length) { <p class="notice">{{ origin() === 'archived' ? 'No hay alimentos personalizados archivados. Cambia el origen para explorar USDA.' : 'Todavía no hay alimentos personalizados. Usa «Añadir alimento personalizado» para crear el primero.' }}</p> }
+         @for (source of [origin()]; track source) { <app-food-picker [foods]="choices()" (selected)="showDetail($event)" /> }
       }
     }
   </div>`, styles: `:host { display: block; min-width: 0; } .notice p:last-child { margin: .75rem 0 0; } select { max-width: 100%; }` })

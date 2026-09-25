@@ -13,7 +13,7 @@ export function mealDocument(person: Person, revision: MealPlanRevision, target:
   if (person.id !== revision.personId || (target && target.personId !== person.id)) throw new Error('El plan o el objetivo pertenece a otra persona.');
   const content: PdfNode[] = [text('ENTRENA CON JESÚS / PLANIFICACIÓN'), heading(label(revision.name)),
     text(`Persona: ${person.displayName} · ${person.reference || 'Espacio local'}`),
-    text(`Revisión guardada: ${revision.updatedAt.slice(0, 10)} · ID ${revision.id}`),
+     text(`Revisión guardada el ${revision.updatedAt.slice(0, 10)} · ${revision.content.weeks.length} semanas`),
     { text: 'PLAN PREVISTO · No es consumo registrado. Las semanas y los días son posiciones del plan, no fechas de ingesta.', bold: true, color: blue, fillColor: pale, margin: [0, 8, 0, 8] }];
   if (target) content.push(text(`Referencia indicativa independiente para ${target.date} · objetivo guardado v${target.version}: ${number(target.calculation.result.targetKcal)} kcal · P ${number(target.calculation.result.macroGrams.protein)} g · C ${number(target.calculation.result.macroGrams.carbohydrate)} g · G ${number(target.calculation.result.macroGrams.fat)} g. No asigna este plan a esa fecha ni representa consumo.`));
   else content.push(text('Sin objetivo diario guardado de referencia; el plan no tiene fecha asignada.'));

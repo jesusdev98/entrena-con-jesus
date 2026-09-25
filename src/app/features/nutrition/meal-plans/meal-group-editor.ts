@@ -11,7 +11,7 @@ import { RowActions } from '../../routines/row-actions';
       <input [id]="meal().id + '-name'" [value]="meal().name" maxlength="160" (input)="rename($event)" /></div>
     @for (item of meal().foods; track item.id; let index = $index) {
       <div class="meal-food stack" data-testid="planned-food"><strong>{{ item.food.name }}</strong>
-        <p class="muted">{{ 'fdcId' in item.food.source ? 'USDA · FDC ' + item.food.source.fdcId : 'Personalizado' }} · valores capturados por 100 g</p>
+         <p class="muted">{{ 'fdcId' in item.food.source ? 'USDA' : 'Personalizado' }} · valores capturados por 100 g</p>
         <div class="field"><label [for]="item.id + '-grams'">Gramos de {{ item.food.name }}</label>
           <input [id]="item.id + '-grams'" type="number" inputmode="decimal" min="0.01" step="any" [value]="item.grams ?? ''" (input)="grams(item, $event)" /></div>
         @if (item.grams !== null && item.grams > 0 && finite(item.grams)) { <app-nutrient-values [values]="scaled(item)" /> }

@@ -64,7 +64,7 @@ export function routineDocument(person: Person, revision: RoutineRevision, artwo
     { text: 'ENTRENA CON JESÚS  /  PLANIFICACIÓN', fontSize: 9, bold: true, color: blue, characterSpacing: 1.2, margin: [0, 0, 0, 5] },
     heading(revision.name, 21),
     paragraph(`Persona: ${person.displayName} · ${person.reference || 'Espacio local'}`),
-    paragraph(`Revisión guardada: ${revision.updatedAt.slice(0, 10)} · ID ${revision.id}`),
+     paragraph(`Revisión guardada el ${revision.updatedAt.slice(0, 10)} · ${revision.content.weeks.length} semanas`),
     { text: 'PLAN PREVISTO · Los objetivos no son resultados realizados.', bold: true, fontSize: 9, color: blue, fillColor: pale, margin: [0, 8, 0, 9] },
   ];
   if (revision.content.notes) content.push(heading('Notas de la rutina'), ...continuation(revision.content.notes, 'Notas de la rutina'));

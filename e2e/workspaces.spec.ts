@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
+import { markLegacyWorkspace } from './support/legacy-workspace';
 
 async function onboard(page: Page, mode: 'trainer' | 'client' = 'trainer', path = '/'): Promise<void> {
   await page.goto(path);
+  await markLegacyWorkspace(page);
   await page.getByRole('radio', { name: mode === 'trainer' ? /Entrenador/ : /Cliente/ }).check();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Jesús');
   await page.getByRole('button', { name: 'Crear mi espacio' }).click();
@@ -49,10 +51,10 @@ test('recovers an unfinished client draft with the same identity after restart',
   await page.getByRole('link', { name: 'Añadir cliente' }).click();
   await page.getByRole('textbox', { name: 'Nombre', exact: true }).fill('Borrador');
   await expect(page.getByRole('status')).toContainText('Borrador guardado');
-  const identity = await page.getByText('ID del perfil:').textContent();
+  await expect(page.getByText('Este perfil conserva sus datos aunque otra persona tenga el mismo nombre.')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('textbox', { name: 'Nombre', exact: true })).toHaveValue('Borrador');
-  await expect(page.getByText('ID del perfil:')).toHaveText(identity!);
+  await expect(page.getByText('Este perfil conserva sus datos aunque otra persona tenga el mismo nombre.')).toBeVisible();
   await page.getByRole('button', { name: 'Guardar perfil' }).click();
   await expect(page.getByTestId('active-person-name')).toHaveText('Borrador');
 });

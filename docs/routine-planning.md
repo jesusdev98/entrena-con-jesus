@@ -9,6 +9,7 @@
 3. Enter targets for each set. Weeks, days, exercise instances and sets support duplication, removal and keyboard-operable move buttons. Duplicated rows have independent labels and values.
 4. **Guardar rutina válida** validates the entire plan. Missing/invalid values stay in a separately labeled draft. **Volver a la lista conservando borrador** retains changes; the list offers named recovery buttons.
 5. Edit saved plans, duplicate into a new draft, or archive/restore from the list. A duplicate becomes a saved plan only after explicit validation/save.
+6. **Eliminar definitivamente [rutina]** presents an irreversible confirmation, separate from archive. Cancel without writing, or confirm to remove all revisions and matching routine editor drafts from both active and archived lists. Completed training sessions, frozen prescriptions, progress/corrections and actual-history PDFs remain available. Archived or deleted plans have no plan PDF.
 
 For offline use, prepare resources in **Ajustes** until readiness is confirmed, before disconnecting. Routine creation, editing, saved illustrations and draft recovery then use local resources/storage. External attribution links still need connectivity.
 
@@ -25,6 +26,7 @@ For offline use, prepare resources in **Ajustes** until readiness is confirmed, 
 | Revisions | Save/archive/restore append a parent-linked revision. Head comparison, active persisted person/mode checks, revision insertion and matching-draft deletion share one transaction. Failed commits preserve the draft. |
 | Draft ownership | Each editor captures its person once. Mode/person/route transitions flush registered editors before leaving; failed writes retain input and block transitions. Same-name people remain distinct by UUID. |
 | Cross-tab conflicts | Draft writes compare the entire last durable payload, including equal-timestamp changes. Conflicts display local/current/durable values. Choosing current, keeping local values over the displayed revision, adopting a durable draft or retaining a new copy is explicit. A further concurrent change fails comparison again. |
+| Permanent deletion | One owner-scoped transaction compares the expected head and deletes the selected plan's entire revision chain and editor drafts. Stale editors cannot save against a deleted head; saved training sessions and training drafts are untouched. No store/version or JSON format changes. |
 
 Archive preserves history and existing drafts. Resolving an archived edit cannot implicitly restore the routine; restore it from the list or preserve the edit as a new copy. Copies leave the original routine/draft available.
 

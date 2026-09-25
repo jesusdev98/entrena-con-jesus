@@ -3,6 +3,15 @@ import { Card } from '../../shared/ui/card';
 import { Button } from '../../shared/ui/button';
 import { BackupExchange, type BackupReview } from './backup-exchange';
 import { MAX_BACKUP_BYTES } from './backup-schema';
+import { reviewLabel } from './review-display';
+
+const storeLabels: Record<string, string> = {
+  settings: 'Configuración del espacio', people: 'Personas', profileRevisions: 'Versiones de perfil',
+  customExercises: 'Ejercicios personalizados', customFoods: 'Alimentos personalizados',
+  routineRevisions: 'Versiones de rutinas', mealPlanRevisions: 'Versiones de planes de comidas',
+  trainingSessions: 'Entrenamientos reales', foodLogs: 'Alimentos consumidos', dailySnapshots: 'Objetivos diarios',
+  mealConsumptions: 'Comidas marcadas como consumidas', drafts: 'Borradores', externalSubjects: 'Vínculos de origen externo',
+};
 
 @Component({ selector: 'app-backup-panel', imports: [Card, Button], changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<app-card><h2>Copia completa de este dispositivo</h2>
@@ -14,11 +23,11 @@ import { MAX_BACKUP_BYTES } from './backup-schema';
     <label for="backup-file">Archivo de copia completa JSON</label>
     <input id="backup-file" type="file" accept=".json,application/json" [disabled]="busy()" (change)="pick($event)" />
     @if (review(); as value) { <section class="backup-review" aria-label="Revisar reemplazo de datos">
-      <h3>Revisión antes de reemplazar</h3><p>Archivo {{ value.file.exportId }} · {{ value.file.exportedAt }}. Los ID son referencias, no verifican la procedencia.</p>
-      <p>Personas en el archivo ({{ value.people.length }}):</p><ul>@for (person of value.people; track person.id) {
-        <li>{{ person.name }} · {{ person.kind === 'personal' ? 'Personal' : 'Cliente' }} · ID {{ person.id }}</li> }</ul>
-      <p>Registros que se reemplazarán (archivo / locales):</p><ul>@for (row of value.counts; track row.store) {
-        <li>{{ row.store }}: {{ row.incoming }} / {{ row.existing }}</li> }</ul>
+       <h3>Revisión antes de reemplazar</h3><p>Archivo creado: {{ value.file.exportedAt }}. La procedencia del archivo no está verificada.</p>
+       <p>Personas en el archivo ({{ value.people.length }}):</p><ul>@for (person of value.people; track person.id) {
+         <li>{{ backupPerson(person, value.people) }}</li> }</ul>
+       <p>Registros que se reemplazarán (archivo / locales):</p><ul>@for (row of value.counts; track row.store) {
+         <li>{{ storeLabel(row.store) }}: {{ row.incoming }} / {{ row.existing }}</li> }</ul>
       <label><input type="checkbox" [checked]="confirmed()" (change)="confirmed.set($any($event.target).checked)" /> Confirmo que esta copia reemplazará todos los datos personales locales</label>
       <div class="actions"><button appButton variant="secondary" [disabled]="busy()" (click)="cancel()">Cancelar restauración</button>
         <button appButton [disabled]="busy() || !confirmed()" (click)="restore()">Restaurar y reemplazar datos</button></div>
@@ -33,6 +42,13 @@ export class BackupPanel {
   protected readonly confirmed = signal(false);
   protected readonly message = signal('');
   protected readonly error = signal('');
+  protected storeLabel(store: string): string { return storeLabels[store] ?? 'Otros registros'; }
+  protected backupPerson(person: BackupReview['people'][number], people: BackupReview['people']): string {
+    const same = people.filter(item => item.kind === person.kind && item.name.localeCompare(person.name, 'es', { sensitivity: 'base' }) === 0)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+    const role = person.kind === 'personal' ? 'Mi espacio' : 'Cliente';
+    return `${reviewLabel(person.name)} · ${role}${same.length > 1 ? ` ${same.findIndex(item => item.id === person.id) + 1}` : ''}`;
+  }
   protected cancel(): void { this.review.set(null); this.confirmed.set(false); this.message.set('Restauración cancelada. No se modificó ningún dato.'); }
   protected async download(): Promise<void> {
     if (this.busy()) return;

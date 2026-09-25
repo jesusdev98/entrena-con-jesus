@@ -58,8 +58,11 @@ describe('local workspace persistence', () => {
     expect(restored.settings.mode).toBeNull();
   });
 
-  it('commits onboarding name and mode together', async () => {
+  it('commits onboarding name and mode together for an existing markerless workspace', async () => {
     const original = store.personalPerson()!;
+    const settings = { ...store.settings()! };
+    delete settings.demoSeed;
+    await (await database.open()).put('settings', settings);
     await people.savePerson(personalId, personValue('Jesús'), original.updatedAt, undefined, 'client');
     database.close();
     const restored = await people.load();

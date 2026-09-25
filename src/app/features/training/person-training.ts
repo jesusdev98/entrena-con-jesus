@@ -25,6 +25,10 @@ export class PersonTraining implements OnInit {
     if (this.initialSession() && !this.destroy.destroyed) await this.reopen(this.initialSession() as UUID);
   }
   plan() { return this.plans().find(p => p.id === this.form.controls.revision.value); }
+  planLabel(plan: RoutineRevision): string {
+    const same = this.plans().filter(item => item.name === plan.name);
+    return `${plan.name}${same.length > 1 ? ` · rutina ${same.findIndex(item => item.id === plan.id) + 1}` : ''} · ${plan.content.weeks.length} semanas`;
+  }
   week() { return this.plan()?.content.weeks.find(w => w.id === this.form.controls.week.value); }
   selectPlan(): void { this.form.controls.week.setValue(this.plan()?.content.weeks[0]?.id ?? ''); this.selectWeek(); }
   selectWeek(): void { this.form.controls.day.setValue(this.week()?.days[0]?.id ?? ''); }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, input, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { localDate, newId, type LocalDate, type UUID } from '../../../core/domain/identity';
 import { storageFailure } from '../../../core/storage/database';
 import { DraftCoordinator } from '../../../core/storage/draft-coordinator';
@@ -18,7 +18,7 @@ import { DiaryRepository, type DiaryDraft } from './diary.repository';
 import { ProgressExport, pdfFilename } from '../../pdf/progress-export';
 
 interface MealOption { plan: MealPlanRevision; meal: PlannedMeal; day: string; week: string; key: string }
-@Component({ selector: 'app-person-diary', imports: [Button, ProgressRing, DecimalPipe], changeDetection: ChangeDetectionStrategy.OnPush,
+@Component({ selector: 'app-person-diary', imports: [Button, ProgressRing, DecimalPipe, RouterLink], changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './person-diary.html', styles: `:host { display:block; min-width:0 } :host > .stack { grid-template-columns:minmax(0,1fr) } section { min-width:0 }
     .rings { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem }
     .diary-row { border:1px solid var(--line); padding:1rem; border-radius:1rem; min-width:0; overflow-wrap:anywhere }
